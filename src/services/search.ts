@@ -4,9 +4,15 @@ import {
   AutocompleteResponseSchema,
   type CountResponse,
   CountResponseSchema,
+  type DataPublication,
+  DataPublicationSchema,
+  type DataUpdate,
+  DataUpdateSchema,
   type Filtro,
   type SearchResponse,
   SearchResponseSchema,
+  type SystemVersions,
+  SystemVersionsSchema,
   type Tribunal,
   TribunalSchema,
 } from "@schemas/search";
@@ -49,18 +55,18 @@ export class SearchService extends BaseService {
     return this.get("/no-auth/informacao/tribunais", z.array(TribunalSchema));
   }
 
-  async getSystemInfo(): Promise<{
-    versao: string;
-    dataAtualizacao: string;
-    ultimaAtualizacaoDados: string;
-  }> {
+  async getSystemVersions(): Promise<SystemVersions> {
+    return this.get("/no-auth/informacao/versao", SystemVersionsSchema);
+  }
+
+  async getDataUpdateDate(): Promise<DataUpdate> {
+    return this.get("/no-auth/informacao/dataIndexacaoDados", DataUpdateSchema);
+  }
+
+  async getDataPublicationDate(): Promise<DataPublication> {
     return this.get(
-      "/no-auth/informacao",
-      z.object({
-        versao: z.string(),
-        dataAtualizacao: z.string(),
-        ultimaAtualizacaoDados: z.string(),
-      })
+      "/no-auth/informacao/dataPublicacaoDados",
+      DataPublicationSchema
     );
   }
 }

@@ -74,6 +74,27 @@ export const TribunalSchema = z.object({
   nome: z.string(),
 });
 
+// System information schemas
+export const SystemVersionsSchema = z.object({
+  versoes: z.array(
+    z.object({
+      versao: z.string(),
+      dataLancamento: z.string(),
+      descricao: z.string().optional(),
+    })
+  ),
+});
+
+export const DataUpdateSchema = z.object({
+  dataIndexacao: z.string(),
+  ultimaAtualizacao: z.string(),
+});
+
+export const DataPublicationSchema = z.object({
+  dataPublicacao: z.string(),
+  fonte: z.string().optional(),
+});
+
 // Types
 export type Filtro = z.infer<typeof FiltroSchema>;
 export type ValorFiltro = z.infer<typeof ValorFiltroSchema>;
@@ -82,3 +103,6 @@ export type SearchResponse = z.infer<typeof SearchResponseSchema>;
 export type CountResponse = z.infer<typeof CountResponseSchema>;
 export type AutocompleteResponse = z.infer<typeof AutocompleteResponseSchema>;
 export type Tribunal = z.infer<typeof TribunalSchema>;
+export type SystemVersions = z.infer<typeof SystemVersionsSchema>;
+export type DataUpdate = z.infer<typeof DataUpdateSchema>;
+export type DataPublication = z.infer<typeof DataPublicationSchema>;
