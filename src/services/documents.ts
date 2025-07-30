@@ -98,6 +98,9 @@ export class DocumentService extends BaseService {
   async validatePdfAuthenticity(codigoAutenticidade: string) {
     const schema = z.object({
       valido: z.boolean(),
+      tipoDocumento: z.string().optional(),
+      tribunal: z.string().optional(),
+      idDocumento: z.string().optional(),
       documento: z
         .object({
           tribunal: z.string(),
@@ -107,7 +110,7 @@ export class DocumentService extends BaseService {
         .optional(),
     });
 
-    return this.post("/no-auth/pdfInteiroTeor/validar", schema, {
+    return this.put("/no-auth/pdfInteiroTeor/validarAutenticidade", schema, {
       codigoAutenticidade,
     });
   }
