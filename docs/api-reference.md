@@ -16,10 +16,11 @@
    - [5.3 Administrative Endpoints](#53-administrative-endpoints)
    - [5.4 AI Service Endpoints](#54-ai-service-endpoints)
 6. [Data Models](#6-data-models)
-7. [Error Handling](#7-error-handling)
-8. [External Dependencies](#8-external-dependencies)
-9. [Rate Limiting](#9-rate-limiting)
-10. [Changelog](#10-changelog)
+7. [API Constraints and Limitations](#7-api-constraints-and-limitations)
+8. [Error Handling](#8-error-handling)
+9. [External Dependencies](#9-external-dependencies)
+10. [Rate Limiting](#10-rate-limiting)
+11. [Changelog](#11-changelog)
 
 ---
 
@@ -155,7 +156,7 @@ Performs a comprehensive search across all document collections.
 | Parameter | Type | Description | Example |
 |-----------|------|-------------|---------|
 | `texto` | string | Search query (supports boolean operators) | `"horas extras" +noturno` |
-| `colecao` | string[] | Document collections to search | `acordaos,precedentes` |
+| `colecao` | string | Single document collection to search | `acordaos` |
 | `tribunais` | string[] | Court identifiers | `TST,TRT1,TRT9` |
 | `precedente` | string | Specific precedent identifier | `SUM-437` |
 | `temEmenta` | string | Filter by ementa presence | `S` or `N` |
@@ -178,37 +179,58 @@ Performs a comprehensive search across all document collections.
 {
   "documentos": [
     {
-      "id": "123456",
-      "tribunal": "TST",
-      "numeroProcesso": "1234567-89.2024.5.00.0000",
-      "tituloDecisao": "RECURSO DE REVISTA - HORAS EXTRAS",
-      "ementa": "HORAS EXTRAS. TRABALHO NOTURNO...",
-      "relator": "Min. João Silva",
-      "dataJulgamento": "2024-06-15",
-      "orgaoJulgador": "3ª Turma",
-      "classeProcessual": "Recurso de Revista"
+      "numeroProcesso": "1000418-17.2025.5.90.0000",
+      "siglaClasseProcesso": "PCA",
+      "classeProcesso": "Procedimento de Controle Administrativo",
+      "relator": "MARCIA ANDREA FARIAS DA SILVA",
+      "tribunal": "CSJT",
+      "idGabinete": null,
+      "gabinete": null,
+      "idTurma": 31,
+      "turma": "Conselho Superior da Justiça do Trabalho",
+      "textoAcordao": "<html>...A C Ó R D Ã O...</html>",
+      "ementa": "AGRAVO REGIMENTAL...",
+      "possuiEmenta": "S",
+      "idDocumentoAcordao": "doc-12345",
+      "highlightTextoAcordaoAnonimizado": "texto destacado",
+      "highlightEmenta": "ementa destacada",
+      "highlightTextoAcordao": "acórdão destacado",
+      "referenciaLegislativa": [],
+      "dataJulgamento": "2025-07-15",
+      "dataJuntada": "2025-07-16"
     }
   ],
   "filtrosDisponiveis": [
     {
-      "nomeDoFiltro": "tribunal",
-      "nomeWeb": "Tribunal",
       "ordem": 1,
+      "nomeDoFiltro": "colecao",
+      "nomeWeb": "Coleção",
+      "colecao": null,
       "valoresFiltro": [
         {
-          "valor": "TST",
-          "quantidade": 1234,
-          "valorWeb": "Tribunal Superior do Trabalho"
+          "valor": "acordaos",
+          "valorWeb": "Acórdãos",
+          "quantidade": 7843774,
+          "valorBalao": "Acórdãos"
+        },
+        {
+          "valor": "precedentes",
+          "valorWeb": "Precedentes",
+          "quantidade": 2148,
+          "valorBalao": "Precedentes"
         }
       ]
     }
   ],
-  "quantidadeTotal": 5678,
+  "quantidadeTotal": 10000,
   "temasTopFive": [
     {
-      "id": "tema-123",
-      "titulo": "Tema relacionado",
-      "descricao": "Descrição do tema"
+      "numeroProcesso": "0001234-56.2024.5.01.0000",
+      "tribunal": "TRT1",
+      "relator": "DESEMBARGADOR JOSÉ SILVA",
+      "dataJulgamento": null,
+      "classeProcessual": null,
+      "referenciaLegislativa": "Lei 8.213/91"
     }
   ]
 }
@@ -228,25 +250,11 @@ Returns document counts for each collection matching the search criteria.
 
 ```json
 {
-  "filtrosDisponiveis": [
-    {
-      "nomeDoFiltro": "colecao",
-      "nomeWeb": "Tipo de Documento",
-      "ordem": 0,
-      "valoresFiltro": [
-        {
-          "valor": "acordaos",
-          "quantidade": 3456,
-          "valorWeb": "Acórdãos"
-        },
-        {
-          "valor": "precedentes",
-          "quantidade": 234,
-          "valorWeb": "Precedentes"
-        }
-      ]
-    }
-  ]
+  "countPrecedentes": 863,
+  "countAcordaos": 5632423,
+  "countSentencas": 8549757,
+  "countRR": 2238193,
+  "countDecisoesMonocraticas": 1810935
 }
 ```
 
@@ -409,21 +417,113 @@ Returns a list of all available courts in the system.
 ]
 ```
 
-#### Get System Version
+#### Get System Versions
 
 ```http
-GET /no-auth/informacao
+GET /no-auth/informacao/versao
 ```
 
-Returns system version and update information.
+Returns system version history.
+
+**Response:**
+
+```json
+[
+  {
+    "versao": "2.12.1",
+    "data": "18 de Julho de 2025",
+    "descricao": "Versão atual do sistema"
+  },
+  {
+    "versao": "2.12.0",
+    "data": "15 de Julho de 2025",
+    "descricao": "Melhorias na busca"
+  }
+]
+```
+
+#### Get Data Update Information
+
+```http
+GET /no-auth/informacao/dataIndexacaoDados
+```
+
+Returns data indexing dates by tribunal and document type.
 
 **Response:**
 
 ```json
 {
-  "versao": "2.12.1",
-  "dataAtualizacao": "2025-07-28T00:00:00Z",
-  "ultimaAtualizacaoDados": "2025-07-29T03:00:00Z"
+  "dataAtualizacaoPrecedentes": [
+    {
+      "tribunal": "TST",
+      "data": "29/07/2025"
+    },
+    {
+      "tribunal": "TRT9",
+      "data": "29/07/2025"
+    }
+  ],
+  "dataAtualizacaoAcordao": [
+    {
+      "tribunal": "TRT2",
+      "data": "30/07/2025"
+    },
+    {
+      "tribunal": "TST",
+      "data": "30/07/2025"
+    }
+  ],
+  "dataAtualizacaoSentenca": [
+    {
+      "tribunal": "TRT2",
+      "data": "30/07/2025"
+    }
+  ],
+  "dataAtualizacaoRecursoRevista": [
+    {
+      "tribunal": "TRT2",
+      "data": "30/07/2025"
+    }
+  ],
+  "dataAtualizacaoDecisaoMonocratica": [
+    {
+      "tribunal": "TST",
+      "data": "30/07/2025"
+    }
+  ]
+}
+```
+
+#### Get Data Publication Information
+
+```http
+GET /no-auth/informacao/dataPublicacaoDados
+```
+
+Returns data publication dates by tribunal and document type.
+
+**Response:**
+
+```json
+{
+  "dataAtualizacaoPrecedentes": [
+    {
+      "tribunal": "TST",
+      "data": "02/07/2025"
+    },
+    {
+      "tribunal": "STF",
+      "data": null
+    }
+  ],
+  "dataAtualizacaoAcordao": [
+    {
+      "tribunal": "TRT2",
+      "data": "29/07/2025"
+    }
+  ]
+  // ... other document types with similar structure
 }
 ```
 
@@ -874,14 +974,15 @@ interface FiltroDisponivel {
   nomeDoFiltro: string;
   nomeWeb: string;
   ordem: number;
+  colecao?: string | null;       // Additional field in API
   valoresFiltro: ValorFiltro[];
 }
 
 interface ValorFiltro {
   valor: string;
-  quantidade: number;
+  quantidade: number | null;     // Can be null in API responses
   valorWeb?: string;
-  valorBalao?: string;
+  valorBalao?: string | null;    // Can be null in API responses
 }
 ```
 
@@ -961,7 +1062,125 @@ interface AcaoBotaoForm {
 
 ---
 
-## 7. Error Handling
+## 7. API Constraints and Limitations
+
+### 7.1 Search Constraints
+
+#### Page Size Limits
+
+The API enforces strict page size limits based on authentication status:
+
+| User Type | Maximum Page Size | Error Message |
+|-----------|------------------|---------------|
+| Non-authenticated | 10 | "Seu usuário não tem autorização para realizar pesquisas com páginas de tamanho X!" |
+| Authenticated | Variable | Depends on user permissions |
+
+**Important**: Requests with `size > 10` for non-authenticated users will return HTTP 403.
+
+#### Single Collection Restriction
+
+The API only accepts **one collection** per search request:
+
+```javascript
+// ✅ Correct - single collection
+{ colecao: "acordaos" }
+
+// ❌ Incorrect - multiple collections
+{ colecao: ["acordaos", "precedentes"] }
+```
+
+**Error**: Attempting multiple collections returns "Não é permitido realizar busca de mais de 1 coleção na mesma pesquisa".
+
+### 7.2 Parameter Formatting
+
+#### Array Parameter Separators
+
+Different array parameters use different separators:
+
+| Parameter | Separator | Example |
+|-----------|-----------|----------|
+| `tribunais` | `,` (comma) | `TST,TRT1,TRT9` |
+| `nomeRelator` | `#` (hash) | `João Silva#Maria Santos` |
+| `orgaoJulgador` | `#` (hash) | `1ª Turma#2ª Turma` |
+| `classeProcesso` | `#` (hash) | `RR#AIRR` |
+
+### 7.3 Response Variability
+
+#### Document Fields
+
+Document responses have highly variable field presence:
+
+- **Optional Fields**: `id`, `numeroProcesso`, `tituloDecisao` may be undefined
+- **Null Fields**: `dataJulgamento`, `classeProcessual`, `gabinete` can be null
+- **Type Variations**: `possuiEmenta` can be boolean or string ("S"/"N")
+- **Array/String Fields**: Highlight fields can be arrays or single strings
+
+#### Filter Values
+
+Filter value quantities can be `null` instead of numbers in certain conditions.
+
+### 7.4 Rate Limiting by Endpoint
+
+| Endpoint Pattern | Rate Limit | Notes |
+|-----------------|------------|--------|
+| `/no-auth/pesquisa` | Lower for large page sizes | Authenticated users get higher limits |
+| `/no-auth/informacao/*` | Standard | Information endpoints have generous limits |
+| `/no-auth/autocompletar` | Moderate | Designed for real-time use |
+
+### 6.3 System Information Models
+
+#### SystemVersion
+
+```typescript
+interface SystemVersion {
+  versao: string;        // Version number (e.g., "2.12.1")
+  data: string;          // Release date in Portuguese format (e.g., "18 de Julho de 2025")
+  descricao?: string;    // Optional version description
+}
+
+// API returns array directly
+type SystemVersions = SystemVersion[];
+```
+
+#### DataUpdate
+
+```typescript
+interface TribunalDataUpdate {
+  tribunal: string;      // Court identifier (e.g., "TST", "TRT2")
+  data: string;          // Update date in DD/MM/YYYY format
+}
+
+interface DataUpdate {
+  dataAtualizacaoPrecedentes: TribunalDataUpdate[];
+  dataAtualizacaoPrecedentesBNP: TribunalDataUpdate[];
+  dataAtualizacaoAcordao: TribunalDataUpdate[];
+  dataAtualizacaoSentenca: TribunalDataUpdate[];
+  dataAtualizacaoRecursoRevista: TribunalDataUpdate[];
+  dataAtualizacaoDecisaoMonocratica: TribunalDataUpdate[];
+}
+```
+
+#### DataPublication
+
+```typescript
+interface TribunalDataPublication {
+  tribunal: string;              // Court identifier
+  data: string | null;           // Publication date or null if not available
+}
+
+interface DataPublication {
+  dataAtualizacaoPrecedentes: TribunalDataPublication[];
+  dataAtualizacaoPrecedentesBNP: TribunalDataPublication[];
+  dataAtualizacaoAcordao: TribunalDataPublication[];
+  dataAtualizacaoSentenca: TribunalDataPublication[];
+  dataAtualizacaoRecursoRevista: TribunalDataPublication[];
+  dataAtualizacaoDecisaoMonocratica: TribunalDataPublication[];
+}
+```
+
+---
+
+## 8. Error Handling
 
 ### HTTP Status Codes
 
@@ -998,7 +1217,7 @@ The frontend implements specific handling for:
 
 ---
 
-## 8. External Dependencies
+## 9. External Dependencies
 
 ### OpenStreetMap Nominatim API
 
@@ -1016,7 +1235,7 @@ GET https://nominatim.openstreetmap.org/reverse?lat={latitude}&lon={longitude}&f
 
 ---
 
-## 9. Rate Limiting
+## 10. Rate Limiting
 
 ### Limits
 
@@ -1043,13 +1262,18 @@ When rate limited, the API returns:
 
 ---
 
-## 10. Changelog
+## 11. Changelog
 
 ### Version 2.12.1 (Current)
 - Added AI service integration ("Robusto")
 - Enhanced geolocation tracking for notifications
 - Improved search performance with faceted filtering
 - Added PDF generation with authenticity codes
+- **Documentation Update**: Corrected API response schemas based on real implementation
+  - Fixed Count response structure (now returns count objects instead of filters)
+  - Updated System Information endpoints to reflect actual array responses
+  - Added API constraints section documenting page size limits and collection restrictions
+  - Corrected Document model to include all actual fields and nullable types
 
 ### Version 2.11.0
 - Introduced saved searches functionality
