@@ -108,6 +108,189 @@ The project uses TypeScript path mappings for cleaner imports:
 - `@core/*` → `src/core/*`
 - `@types/*` → `src/types/*`
 
+## Testing Patterns & Guidelines
+
+### Testing Philosophy
+Follow **Test-Driven Development (TDD)** - write tests before implementation. Tests define the contract and expected behavior, serving as living documentation.
+
+### Test Organization
+```
+tests/
+├── unit/           # Isolated unit tests for individual functions/classes
+├── integration/    # Service integration tests with mocked HTTP
+├── e2e/           # End-to-end tests (minimal, for critical user flows)
+├── fixtures/      # Test data and mock responses
+├── mocks/         # MSW handlers and test server setup
+├── setup.ts       # Global test configuration
+└── utils/         # Test utilities and helpers
+```
+
+### Test Categories & Patterns
+
+#### 1. Unit Tests (`tests/unit/`)
+Test individual functions, classes, and modules in isolation.
+
+**Pattern**: `describe` → `describe` → `it`
+```typescript
+// tests/unit/core/session.test.ts
+describe("SessionManager", () => {
+  describe("constructor", () => {
+    it("should initialize with default storage", () => {
+      // Test setup and assertions
+    });
+  });
+  
+  describe("setSession", () => {
+    it("should store session data correctly", () => {
+      // Test implementation
+    });
+  });
+});
+```
+
+**Key Principles**:
+- Mock external dependencies using `vi.mock()`
+- Test both happy path and error scenarios
+- Verify type guards and branded types work correctly
+- Use `beforeEach` for test isolation
+
+#### 2. Integration Tests (`tests/integration/`)
+Test service interactions with mocked HTTP responses using MSW.
+
+**Pattern**: Test entire service workflows
+```typescript
+// tests/integration/search.test.ts
+describe("SearchService Integration", () => {
+  beforeEach(() => {
+    // Setup MSW handlers
+    server.use(
+      http.post("/api/search", ({ request }) => {
+        return HttpResponse.json(mockSearchResponse);
+      })
+    );
+  });
+
+  it("should perform search with filters", async () => {
+    const result = await client.search.search({
+      query: "test",
+      filtros: { tribunal: ["STF"] }
+    });
+    
+    expect(result).toMatchObject({
+      totalElements: expect.any(Number),
+      content: expect.any(Array)
+    });
+  });
+});
+```
+
+#### 3. Schema Validation Tests
+Test Zod schemas thoroughly since they're critical for runtime safety.
+
+```typescript
+describe("SearchResponse Schema", () => {
+  it("should validate correct search response", () => {
+    const validData = createMockSearchResponse();
+    expect(() => searchResponseSchema.parse(validData)).not.toThrow();
+  });
+
+  it("should reject invalid data", () => {
+    const invalidData = { invalid: "data" };
+    expect(() => searchResponseSchema.parse(invalidData)).toThrow();
+  });
+});
+```
+
+#### 4. Error Handling Tests
+Test all error scenarios and typed error classes.
+
+```typescript
+describe("Error Handling", () => {
+  it("should throw FalcaoAuthenticationError for 401 responses", async () => {
+    server.use(
+      http.get("/api/protected", () => {
+        return new HttpResponse(null, { status: 401 });
+      })
+    );
+
+    await expect(client.user.getProfile()).rejects.toThrow(
+      FalcaoAuthenticationError
+    );
+  });
+});
+```
+
+### Test Utilities & Helpers
+
+#### Mock Data Creation (`tests/utils/test-helpers.ts`)
+```typescript
+// Create realistic mock data that matches actual API responses
+export const createMockDocumento = (overrides?: Partial<Documento>): Documento => ({
+  id: "doc-123",
+  tribunal: "STF",
+  numeroProcesso: "12345",
+  ...overrides
+});
+```
+
+#### MSW Handlers (`tests/mocks/handlers.ts`)
+```typescript
+// Mirror actual API endpoints with realistic responses
+export const handlers = [
+  http.post("/api/search", ({ request }) => {
+    const url = new URL(request.url);
+    const query = url.searchParams.get("consulta");
+    
+    return HttpResponse.json(createMockSearchResponse({
+      totalElements: query === "empty" ? 0 : 10
+    }));
+  })
+];
+```
+
+### Coverage Requirements
+- **Target**: 80% overall coverage
+- **Core modules**: 85% coverage minimum
+- **Services**: 80% coverage minimum  
+- **Schemas**: 75% coverage minimum
+
+### Testing Commands Integration
+- Run tests: `bun test`
+- Watch mode: `bun test --watch`
+- Coverage: `bun test --coverage`
+- Single file: `bun test path/to/test.ts`
+
+### Mock Strategy
+1. **HTTP Requests**: Use MSW (Mock Service Worker) for API mocking
+2. **External Dependencies**: Use Vitest's `vi.mock()` for modules
+3. **Browser APIs**: Mock localStorage, fetch, etc. in test setup
+4. **Time/Dates**: Use `vi.useFakeTimers()` for deterministic testing
+
+### Test Data Management
+- Store mock responses in `tests/fixtures/`
+- Use factory functions for creating test data variants
+- Keep mock data realistic and based on actual API responses
+- Version control all test fixtures for consistency
+
+### Test Naming Conventions
+- **Files**: `*.test.ts` or `*.spec.ts`
+- **Describe blocks**: Use the class/function name being tested
+- **Test cases**: Use "should [expected behavior] when [condition]"
+
+### Validation Protocol
+Always run this sequence after test changes:
+1. `bun test` - Ensure all tests pass
+2. `bun test --coverage` - Verify coverage thresholds
+3. `bun typecheck` - Check TypeScript compilation
+4. `bun check` - Run Biome linting
+
+### Test Output Organization
+All test artifacts are consolidated in `test-output/`:
+- Coverage reports: `test-output/coverage/`
+- Test results: `test-output/reports/`
+- Debug assets: `test-output/debug/`
+- Generated assets: `test-output/assets/`
+
 ## Development Notes
 
 - This project uses **Bun** as both runtime and package manager
