@@ -1,5 +1,5 @@
+import { BaseService } from "@services/base";
 import { z } from "zod";
-import { BaseService } from "./base";
 
 const CacheStatusSchema = z.object({
   nome: z.string(),

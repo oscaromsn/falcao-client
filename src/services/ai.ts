@@ -1,6 +1,6 @@
+import type { HttpClient } from "@core/http";
+import { BaseService } from "@services/base";
 import { z } from "zod";
-import type { HttpClient } from "../core/http";
-import { BaseService } from "./base";
 
 const ConversationRequestSchema = z.object({
   model: z.string().default("mistralai/Mixtral-8x7B-Instruct-v0.1"),

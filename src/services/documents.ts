@@ -6,8 +6,8 @@ import {
   DocumentResponseSchema,
   TextoResponseSchema,
 } from "@schemas/documents";
+import { BaseService } from "@services/base";
 import { z } from "zod";
-import { BaseService } from "./base";
 
 export class DocumentService extends BaseService {
   async getDocument(

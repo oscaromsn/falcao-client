@@ -1,6 +1,6 @@
+import { FalcaoValidationError } from "@core/errors";
+import type { HttpClient } from "@core/http";
 import type { z } from "zod";
-import { FalcaoValidationError } from "../core/errors";
-import type { HttpClient } from "../core/http";
 
 export abstract class BaseService {
   constructor(protected http: HttpClient) {}

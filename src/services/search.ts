@@ -1,5 +1,4 @@
-import { z } from "zod";
-import type { Pagination } from "../schemas/common";
+import type { Pagination } from "@schemas/common";
 import {
   type AutocompleteResponse,
   AutocompleteResponseSchema,
@@ -10,8 +9,9 @@ import {
   SearchResponseSchema,
   type Tribunal,
   TribunalSchema,
-} from "../schemas/search";
-import { BaseService } from "./base";
+} from "@schemas/search";
+import { BaseService } from "@services/base";
+import { z } from "zod";
 
 export class SearchService extends BaseService {
   private readonly arrayFields = [

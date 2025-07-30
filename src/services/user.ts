@@ -1,7 +1,7 @@
+import type { RequisicaoForm } from "@schemas/common";
+import { type Tribunal, TribunalSchema } from "@schemas/search";
+import { BaseService } from "@services/base";
 import { z } from "zod";
-import type { RequisicaoForm } from "../schemas/common";
-import { type Tribunal, TribunalSchema } from "../schemas/search";
-import { BaseService } from "./base";
 
 // User schemas
 const UserProfileSchema = z.object({
