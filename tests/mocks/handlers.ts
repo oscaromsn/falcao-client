@@ -2,6 +2,7 @@ import { HttpResponse, http } from "msw";
 import {
   createMockApiResponse,
   createMockDocument,
+  createMockErrorResponse,
   createMockSearchResponse,
 } from "../utils/test-helpers";
 
@@ -245,17 +246,25 @@ export const handlers = [
 
   // Error responses for testing
   http.get(`${BASE_URL}/error/500`, () => {
-    return HttpResponse.json(
-      { error: "Internal Server Error", code: 500 },
-      { status: 500 }
-    );
+    const mockError = createMockErrorResponse({
+      status: 500,
+      error: "Internal Server Error",
+      message: "An internal server error occurred",
+      path: "/error/500",
+    });
+    const mockResponse = createMockApiResponse(mockError, { status: 500 });
+    return HttpResponse.json(mockResponse, { status: 500 });
   }),
 
   http.get(`${BASE_URL}/error/401`, () => {
-    return HttpResponse.json(
-      { error: "Unauthorized", code: 401 },
-      { status: 401 }
-    );
+    const mockError = createMockErrorResponse({
+      status: 401,
+      error: "Unauthorized",
+      message: "Authentication required",
+      path: "/error/401",
+    });
+    const mockResponse = createMockApiResponse(mockError, { status: 401 });
+    return HttpResponse.json(mockResponse, { status: 401 });
   }),
 
   http.get(`${BASE_URL}/error/timeout`, () => {
