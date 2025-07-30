@@ -1,38 +1,50 @@
 import { HttpResponse, http } from "msw";
 import {
-  createMockApiResponse,
+  createMockNoAuthAutocompletar,
+  createMockNoAuthNotificacoes,
+} from "../utils/grounded-mock-helpers";
+import {
   createMockDocument,
   createMockErrorResponse,
   createMockSearchResponse,
 } from "../utils/test-helpers";
 
-const BASE_URL = "https://api.test.com";
-const AI_BASE_URL = "https://ai.test.com";
+// IMPORTANT: Real Falcão API returns RAW responses without ApiResponse<T> wrapper
+// These handlers match the actual API structure exactly
+const BASE_URL =
+  "https://jurisprudencia.jt.jus.br/jurisprudencia-nacional-backend/api";
+const AI_BASE_URL = "https://ai.jurisprudencia.jt.jus.br/robusto";
 
 export const handlers = [
-  // Search endpoints
-  http.get(`${BASE_URL}/no-auth/pesquisa`, () => {
-    const mockResponse = createMockApiResponse(createMockSearchResponse());
-    return HttpResponse.json(mockResponse);
+  // Search endpoints - based on real API responses
+  http.get(`${BASE_URL}/no-auth/pesquisa`, ({ request }) => {
+    const url = new URL(request.url);
+    const texto = url.searchParams.get("texto") || "";
+
+    // Return raw SearchResponse - NO WRAPPER (matches real API)
+    const response = createMockSearchResponse({
+      documentos: [
+        createMockDocument({
+          tituloDecisao: `SEARCH RESULT - ${texto}`,
+          ementa: `Ementa relacionada a: ${texto}`,
+        }),
+      ],
+    });
+    return HttpResponse.json(response);
   }),
 
   http.get(`${BASE_URL}/no-auth/autocompletar`, ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get("texto") || "";
 
-    const mockResponse = createMockApiResponse({
-      sugestoes: [
-        `${query} suggestion 1`,
-        `${query} suggestion 2`,
-        `${query} suggestion 3`,
-      ],
-      queriesRelated: [],
-    });
-    return HttpResponse.json(mockResponse);
+    // Return raw AutocompleteResponse - NO WRAPPER (matches real API)
+    const response = createMockNoAuthAutocompletar(query);
+    return HttpResponse.json(response);
   }),
 
   http.get(`${BASE_URL}/no-auth/pesquisa/count`, () => {
-    const mockResponse = createMockApiResponse({
+    // Return raw CountResponse - NO WRAPPER (matches real API)
+    const response = {
       filtrosDisponiveis: [
         {
           nomeDoFiltro: "tribunal",
@@ -40,182 +52,215 @@ export const handlers = [
           ordem: 1,
           valoresFiltro: [
             {
-              valor: "STF",
+              valor: "TST",
               quantidade: 50,
-              valorWeb: "Supremo Tribunal Federal",
-              valorBalao: "STF",
+              valorWeb: "Tribunal Superior do Trabalho",
+              valorBalao: "TST",
             },
           ],
         },
       ],
-    });
-    return HttpResponse.json(mockResponse);
+    };
+    return HttpResponse.json(response);
   }),
 
   // Information endpoints
   http.get(`${BASE_URL}/no-auth/informacao/tribunais`, () => {
     const mockTribunals = [
-      { sigla: "STF", nome: "Supremo Tribunal Federal" },
-      { sigla: "STJ", nome: "Superior Tribunal de Justiça" },
       { sigla: "TST", nome: "Tribunal Superior do Trabalho" },
+      { sigla: "TRT1", nome: "Tribunal Regional do Trabalho da 1ª Região" },
+      { sigla: "STF", nome: "Supremo Tribunal Federal" },
     ];
-    const mockResponse = createMockApiResponse(mockTribunals);
-    return HttpResponse.json(mockResponse);
+    // Return raw array - NO WRAPPER (matches real API)
+    return HttpResponse.json(mockTribunals);
   }),
 
   http.get(`${BASE_URL}/no-auth/informacao/versao`, () => {
-    const mockResponse = createMockApiResponse({
+    // Return raw object - NO WRAPPER (matches real API)
+    const response = {
       versoes: [
         {
-          versao: "1.2.3",
-          dataLancamento: "2024-01-15",
-          descricao: "Falcão Client version 1.2.3",
+          versao: "2.12.1",
+          dataLancamento: "2025-07-28",
+          descricao: "Falcão Client version 2.12.1",
         },
       ],
-    });
-    return HttpResponse.json(mockResponse);
+    };
+    return HttpResponse.json(response);
   }),
 
   http.get(`${BASE_URL}/no-auth/informacao/dataIndexacaoDados`, () => {
-    const mockResponse = createMockApiResponse({
-      dataIndexacao: "2024-01-15",
-      ultimaAtualizacao: "2024-01-15T10:00:00Z",
-    });
-    return HttpResponse.json(mockResponse);
+    // Return raw object - NO WRAPPER (matches real API)
+    const response = {
+      dataIndexacao: "2025-07-29",
+      ultimaAtualizacao: "2025-07-29T03:00:00Z",
+    };
+    return HttpResponse.json(response);
   }),
 
   http.get(`${BASE_URL}/no-auth/informacao/dataPublicacaoDados`, () => {
-    const mockResponse = createMockApiResponse({
-      dataPublicacao: "2024-01-15",
+    // Return raw object - NO WRAPPER (matches real API)
+    const response = {
+      dataPublicacao: "2025-07-29",
       fonte: "Official Source",
-    });
-    return HttpResponse.json(mockResponse);
+    };
+    return HttpResponse.json(response);
+  }),
+
+  // Notifications - based on real API response structure
+  http.get(`${BASE_URL}/no-auth/notificacoes`, ({ request }) => {
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get("page") || "0");
+    const size = parseInt(url.searchParams.get("size") || "5");
+
+    // Return raw array - NO WRAPPER (matches real API)
+    const allNotifications = createMockNoAuthNotificacoes();
+    const start = page * size;
+    const end = start + size;
+    const pageData = allNotifications.slice(start, end);
+
+    return HttpResponse.json(pageData);
   }),
 
   // Document endpoints
-  http.get(`${BASE_URL}/documents/:id`, ({ params }) => {
-    const mockDocument = createMockDocument({
-      id: params.id as any,
-    });
-    const mockResponse = createMockApiResponse(mockDocument);
-    return HttpResponse.json(mockResponse);
+  http.get(
+    `${BASE_URL}/no-auth/pesquisa/acordaos/:tribunal/:id`,
+    ({ params }) => {
+      const mockDocument = createMockDocument({
+        id: params.id as any,
+        tribunal: params.tribunal as string,
+      });
+      // Return raw DocumentResponse - NO WRAPPER (matches real API)
+      const response = {
+        documentos: [mockDocument],
+      };
+      return HttpResponse.json(response);
+    }
+  ),
+
+  http.get(
+    `${BASE_URL}/no-auth/pesquisa/precedentes/:tribunal/:id`,
+    ({ params }) => {
+      const mockDocument = createMockDocument({
+        id: params.id as any,
+        tribunal: params.tribunal as string,
+      });
+      // Return raw DocumentResponse - NO WRAPPER (matches real API)
+      const response = {
+        documentos: [mockDocument],
+      };
+      return HttpResponse.json(response);
+    }
+  ),
+
+  http.post(`${BASE_URL}/no-auth/pesquisa/copiarInteiroTeor`, async () => {
+    // Return raw object - NO WRAPPER (matches real API)
+    const response = {
+      texto: "Inteiro teor do documento para teste...",
+    };
+    return HttpResponse.json(response);
   }),
 
-  http.get(`${BASE_URL}/documents/:id/texto`, ({ params }) => {
-    const mockResponse = createMockApiResponse({
-      id: params.id,
-      texto: "Full document text content for testing purposes...",
-      metadata: {
-        wordCount: 500,
-        pages: 5,
+  http.post(`${BASE_URL}/no-auth/pesquisa/citarDecisao`, async () => {
+    // Return raw object - NO WRAPPER (matches real API)
+    const response = {
+      citacao:
+        "BRASIL. Tribunal Superior do Trabalho. Recurso de Revista nº 1234567-89.2024.5.00.0000. Relator: Min. Test. Brasília, 15 de janeiro de 2024.",
+    };
+    return HttpResponse.json(response);
+  }),
+
+  // User endpoints (authenticated)
+  http.get(`${BASE_URL}/perfil`, () => {
+    // Return raw UserProfile - NO WRAPPER (matches real API)
+    const response = {
+      id: "user123",
+      nome: "Test User",
+      email: "test@example.com",
+      utilizaIARobusto: true,
+      configuracoes: {
+        resultadosPorPagina: 20,
+        abrirDocumentosNovaAba: true,
       },
-    });
-    return HttpResponse.json(mockResponse);
+    };
+    return HttpResponse.json(response);
   }),
 
-  http.post(`${BASE_URL}/documents/:id/citacoes`, ({ params }) => {
-    const mockResponse = createMockApiResponse({
-      documentId: params.id,
-      citacoes: [
+  http.get(`${BASE_URL}/perfil/tribunaisFavoritos`, () => {
+    // Return raw array - NO WRAPPER (matches real API)
+    const response = [
+      { sigla: "TST", nome: "Tribunal Superior do Trabalho" },
+      { sigla: "TRT9", nome: "Tribunal Regional do Trabalho da 9ª Região" },
+    ];
+    return HttpResponse.json(response);
+  }),
+
+  http.post(`${BASE_URL}/pesquisasFavoritas`, async ({ request }) => {
+    const body = await request.json();
+    // Return raw object - NO WRAPPER (matches real API)
+    const response = {
+      id: "search123",
+      titulo: (body as any)?.pesquisaFavorita?.titulo || "Saved Search",
+      dataCriacao: new Date().toISOString(),
+      filtro: (body as any)?.filtro || {},
+    };
+    return HttpResponse.json(response);
+  }),
+
+  http.get(`${BASE_URL}/pesquisasFavoritas`, () => {
+    // Return raw paginated response - NO WRAPPER (matches real API)
+    const response = {
+      content: [
         {
-          id: "cite1",
-          titulo: "Citation 1",
-          tribunal: "STF",
-          relevance: 0.95,
+          id: "search1",
+          titulo: "Constitutional Cases",
+          dataCriacao: "2024-01-01T00:00:00Z",
+          filtro: { texto: "constitutional" },
         },
         {
-          id: "cite2",
-          titulo: "Citation 2",
-          tribunal: "STJ",
-          relevance: 0.88,
+          id: "search2",
+          titulo: "Administrative Law",
+          dataCriacao: "2024-01-02T00:00:00Z",
+          filtro: { texto: "administrative" },
         },
       ],
-    });
-    return HttpResponse.json(mockResponse);
-  }),
-
-  // User endpoints
-  http.get(`${BASE_URL}/user/profile`, () => {
-    const mockResponse = createMockApiResponse({
-      id: "user123",
-      name: "Test User",
-      email: "test@example.com",
-      preferences: {
-        resultsPerPage: 10,
-        defaultTribunal: "STF",
-      },
-    });
-    return HttpResponse.json(mockResponse);
-  }),
-
-  http.post(`${BASE_URL}/user/searches`, async ({ request }) => {
-    const body = await request.json();
-    const mockResponse = createMockApiResponse({
-      id: "search123",
-      name: (body as any)?.name || "Saved Search",
-      query: (body as any)?.query || {},
-      createdAt: new Date().toISOString(),
-    });
-    return HttpResponse.json(mockResponse);
-  }),
-
-  http.get(`${BASE_URL}/user/searches`, () => {
-    const mockResponse = createMockApiResponse([
-      {
-        id: "search1",
-        name: "Constitutional Cases",
-        query: { terms: "constitutional" },
-        createdAt: "2024-01-01T00:00:00Z",
-      },
-      {
-        id: "search2",
-        name: "Administrative Law",
-        query: { terms: "administrative" },
-        createdAt: "2024-01-02T00:00:00Z",
-      },
-    ]);
-    return HttpResponse.json(mockResponse);
+      totalElements: 2,
+      totalPages: 1,
+      number: 0,
+    };
+    return HttpResponse.json(response);
   }),
 
   // Admin endpoints
-  http.get(`${BASE_URL}/admin/system/status`, () => {
-    const mockResponse = createMockApiResponse({
-      status: "healthy",
-      uptime: 86400,
-      version: "1.0.0",
-      database: "connected",
-      cache: "healthy",
-    });
-    return HttpResponse.json(mockResponse);
-  }),
-
-  http.get(`${BASE_URL}/admin/cache/status`, () => {
-    const mockResponse = createMockApiResponse({
-      redis: "connected",
-      memory: "75%",
-      hitRate: 0.92,
-      size: "2.5GB",
-    });
-    return HttpResponse.json(mockResponse);
+  http.get(`${BASE_URL}/statusCache`, () => {
+    // Return raw array - NO WRAPPER (matches real API)
+    const response = [
+      {
+        nome: "SearchCache",
+        grupo: "Pesquisa",
+        tamanho: 1048576,
+        totalEmUso: 524288,
+        totalBuscadoNoCache: 15000,
+        percentualAcessoCache: "85.5",
+        totalBuscadoForaDoCache: 2500,
+        percentualForaDoCache: "14.5",
+      },
+    ];
+    return HttpResponse.json(response);
   }),
 
   // AI endpoints
-  http.post(`${AI_BASE_URL}/conversation`, async ({ request }) => {
-    const body = await request.json();
-    const mockResponse = createMockApiResponse({
-      conversationId: "conv123",
-      response: `AI response to: ${(body as any)?.message || "hello"}`,
-      suggestions: [
-        "Tell me more about this case",
-        "Find similar cases",
-        "Explain the legal reasoning",
-      ],
-    });
-    return HttpResponse.json(mockResponse);
+  http.post(`${AI_BASE_URL}/api/v1/conversation`, async () => {
+    // Return raw object - NO WRAPPER (matches real API)
+    const response = {
+      conversationId: "550e8400-e29b-41d4-a716-446655440000",
+    };
+    return HttpResponse.json(response);
   }),
 
   http.get(`${AI_BASE_URL}/conversation/:id`, ({ params }) => {
-    const mockResponse = createMockApiResponse({
+    // Return raw object - NO WRAPPER (matches real API)
+    const response = {
       id: params.id,
       messages: [
         {
@@ -230,18 +275,19 @@ export const handlers = [
         },
       ],
       createdAt: "2024-01-01T10:00:00Z",
-    });
-    return HttpResponse.json(mockResponse);
+    };
+    return HttpResponse.json(response);
   }),
 
   // Session management
   http.post(`${BASE_URL}/session`, () => {
-    const mockResponse = createMockApiResponse({
+    // Return raw object - NO WRAPPER (matches real API)
+    const response = {
       sessionId: "session_123456789",
       juristkn: "token_abcdef123456",
       expiresAt: new Date(Date.now() + 86400000).toISOString(),
-    });
-    return HttpResponse.json(mockResponse);
+    };
+    return HttpResponse.json(response);
   }),
 
   // Error responses for testing
@@ -252,8 +298,8 @@ export const handlers = [
       message: "An internal server error occurred",
       path: "/error/500",
     });
-    const mockResponse = createMockApiResponse(mockError, { status: 500 });
-    return HttpResponse.json(mockResponse, { status: 500 });
+    // Return raw error - NO WRAPPER (matches real API)
+    return HttpResponse.json(mockError, { status: 500 });
   }),
 
   http.get(`${BASE_URL}/error/401`, () => {
@@ -263,8 +309,8 @@ export const handlers = [
       message: "Authentication required",
       path: "/error/401",
     });
-    const mockResponse = createMockApiResponse(mockError, { status: 401 });
-    return HttpResponse.json(mockResponse, { status: 401 });
+    // Return raw error - NO WRAPPER (matches real API)
+    return HttpResponse.json(mockError, { status: 401 });
   }),
 
   http.get(`${BASE_URL}/error/timeout`, () => {
