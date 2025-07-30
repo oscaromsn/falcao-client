@@ -50,6 +50,8 @@ This is the **Falcão API Client** - a TypeScript client library for the Falcão
 ### Core Client Structure
 The library follows a service-oriented architecture with a central `FalcaoClient` that provides access to specialized service modules:
 
+Always check the `@docs/api-reference.md` or `debug_artifacts` when more information about the Falcao API is needed - specially when writing tests.
+
 ```
 FalcaoClient
 ├── search: SearchService      # Public search operations
