@@ -1,8 +1,18 @@
+import type { Documento } from "@schemas/documents";
+import type { SearchResponse } from "@schemas/search";
 import type { FalcaoClientConfig } from "@/client";
-import type { ApiResponse, DocumentId, Geolocation, SessionId } from "@/types";
+import type {
+  ApiResponse,
+  DocumentId,
+  Geolocation,
+  PaginatedResponse,
+  SessionId,
+} from "@/types";
 
 // Mock data generators
-export const createMockDocument = (overrides: any = {}): any => ({
+export const createMockDocument = (
+  overrides: Partial<Documento> = {}
+): Documento => ({
   id: "doc123",
   tribunal: "STF",
   numeroProcesso: "12345678901234567890",
@@ -17,7 +27,9 @@ export const createMockDocument = (overrides: any = {}): any => ({
   ...overrides,
 });
 
-export const createMockSearchResponse = (overrides: any = {}): any => ({
+export const createMockSearchResponse = (
+  overrides: Partial<SearchResponse> = {}
+): SearchResponse => ({
   documentos: [createMockDocument()],
   filtrosDisponiveis: [
     {
@@ -122,17 +134,19 @@ export const validateResponse = <T>(response: ApiResponse<T>) => {
   );
 };
 
-export const validatePagination = (pagination: any) => {
+export const validatePagination = (pagination: unknown): boolean => {
   return (
-    pagination &&
+    pagination !== null &&
+    pagination !== undefined &&
     typeof pagination === "object" &&
-    "currentPage" in pagination &&
+    "content" in pagination &&
+    "totalElements" in pagination &&
     "totalPages" in pagination &&
-    "totalResults" in pagination &&
-    "pageSize" in pagination &&
-    typeof pagination.currentPage === "number" &&
-    typeof pagination.totalPages === "number" &&
-    typeof pagination.totalResults === "number" &&
-    typeof pagination.pageSize === "number"
+    "number" in pagination &&
+    Array.isArray((pagination as PaginatedResponse<unknown>).content) &&
+    typeof (pagination as PaginatedResponse<unknown>).totalElements ===
+      "number" &&
+    typeof (pagination as PaginatedResponse<unknown>).totalPages === "number" &&
+    typeof (pagination as PaginatedResponse<unknown>).number === "number"
   );
 };

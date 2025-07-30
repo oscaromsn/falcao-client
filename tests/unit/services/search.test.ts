@@ -50,7 +50,7 @@ describe("SearchService", () => {
       httpClient.request = async (config) => {
         expect(config.method).toBe("GET");
         expect(config.url).toBe("/no-auth/pesquisa");
-        return mockResponse;
+        return mockResponse as any;
       };
 
       const filters = {
@@ -109,7 +109,7 @@ describe("SearchService", () => {
         quantidadeTotal: 0,
       });
 
-      httpClient.request = async () => emptyResponse;
+      httpClient.request = async () => emptyResponse as any;
 
       const result = await searchService.search({}, { page: 1, size: 10 });
 
