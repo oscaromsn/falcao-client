@@ -139,7 +139,7 @@ describe("SessionManager", () => {
       // Test setup and assertions
     });
   });
-  
+
   describe("setSession", () => {
     it("should store session data correctly", () => {
       // Test implementation
@@ -175,7 +175,7 @@ describe("SearchService Integration", () => {
       query: "test",
       filtros: { tribunal: ["STF"] }
     });
-    
+
     expect(result).toMatchObject({
       totalElements: expect.any(Number),
       content: expect.any(Array)
@@ -265,7 +265,7 @@ export const handlers = [
   http.post("/api/search", ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get("consulta");
-    
+
     const mockResponse = createMockApiResponse(createMockSearchResponse({
       totalElements: query === "empty" ? 0 : 10
     }));
@@ -294,7 +294,7 @@ return HttpResponse.json({ error: "Server Error" });
 ### Coverage Requirements
 - **Target**: 80% overall coverage
 - **Core modules**: 85% coverage minimum
-- **Services**: 80% coverage minimum  
+- **Services**: 80% coverage minimum
 - **Schemas**: 75% coverage minimum
 
 ### Testing Commands Integration
@@ -346,3 +346,4 @@ All test artifacts are consolidated in `test-output/`:
 - All external API calls include proper session management and geolocation headers
 - All API responses validated with Zod schemas
 - Special handling for certain fields (uses `#` separator for nomeRelator, orgaoJulgador, classeProcesso)
+- When systematic debbuging is needed, write verbose debug scripts iteractively within `scripts/debug`, saving outputs as .json within the `analysis-output` subdirectory. Don't delete these files, they are kept for future reference.
