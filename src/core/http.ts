@@ -1,10 +1,10 @@
+import { FalcaoAuthenticationError, FalcaoNetworkError } from "@core/errors";
+import type { SessionManager } from "@core/session";
 import axios, {
   type AxiosInstance,
   type AxiosRequestConfig,
   type InternalAxiosRequestConfig,
 } from "axios";
-import { FalcaoAuthenticationError, FalcaoNetworkError } from "./errors";
-import type { SessionManager } from "./session";
 
 export interface HttpClientConfig {
   baseURL: string;

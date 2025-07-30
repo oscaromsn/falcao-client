@@ -1,5 +1,5 @@
+import type { Geolocation } from "@schemas/common";
 import { MD5 } from "crypto-js";
-import type { Geolocation } from "../schemas/common";
 
 const JURIS_TOKEN_SALT = "T9!juris#F4LKN";
 const SESSION_ID_KEY = "falcao_session_id";
