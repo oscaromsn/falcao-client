@@ -214,7 +214,8 @@
       "it",
       "expect",
       "vi",
-      "test"
+      "test",
+      "Bun"
     ],
     "parser": {
       "unsafeParameterDecoratorsEnabled": true

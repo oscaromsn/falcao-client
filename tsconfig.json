@@ -46,7 +46,8 @@
     "emitDecoratorMetadata": true,
     "types": [
       "vitest/globals",
-      "node"
+      "node",
+      "bun"
     ],
     // Path mapping
     "baseUrl": ".",
