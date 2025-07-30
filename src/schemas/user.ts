@@ -43,8 +43,16 @@ export const UserStatisticsSchema = z.object({
   totalUsuarios: z.number(),
 });
 
+export const UserRankingSchema = z.object({
+  posicao: z.number(),
+  totalPesquisas: z.number(),
+  totalUsuarios: z.number(),
+  percentil: z.number().optional(),
+});
+
 export type UserProfile = z.infer<typeof UserProfileSchema>;
 export type SavedSearch = z.infer<typeof SavedSearchSchema>;
 export type Notification = z.infer<typeof NotificationSchema>;
 export type WordCloudItem = z.infer<typeof WordCloudItemSchema>;
 export type UserStatistics = z.infer<typeof UserStatisticsSchema>;
+export type UserRanking = z.infer<typeof UserRankingSchema>;

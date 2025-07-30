@@ -7,6 +7,8 @@ import {
   SavedSearchSchema,
   type UserProfile,
   UserProfileSchema,
+  type UserRanking,
+  UserRankingSchema,
   type UserStatistics,
   UserStatisticsSchema,
   type WordCloudItem,
@@ -130,5 +132,9 @@ export class UserService extends BaseService {
 
   async getUserStatistics(): Promise<UserStatistics> {
     return this.get("/logAcesso/estatisticas", UserStatisticsSchema);
+  }
+
+  async getUserRanking(): Promise<UserRanking> {
+    return this.get("/perfil/ranking", UserRankingSchema);
   }
 }
