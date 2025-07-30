@@ -7,7 +7,37 @@ const GEOLOCATION_CACHE_TIME = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 export interface SessionConfig {
   persistSession?: boolean;
-  storageType?: "localStorage" | "sessionStorage";
+  storageType?: "localStorage" | "sessionStorage" | "memory";
+}
+
+// Simple in-memory storage for Node.js environments
+class MemoryStorage implements Storage {
+  private store = new Map<string, string>();
+
+  get length(): number {
+    return this.store.size;
+  }
+
+  clear(): void {
+    this.store.clear();
+  }
+
+  getItem(key: string): string | null {
+    return this.store.get(key) ?? null;
+  }
+
+  key(index: number): string | null {
+    const keys = Array.from(this.store.keys());
+    return keys[index] ?? null;
+  }
+
+  removeItem(key: string): void {
+    this.store.delete(key);
+  }
+
+  setItem(key: string, value: string): void {
+    this.store.set(key, value);
+  }
 }
 
 export class SessionManager {
@@ -16,11 +46,26 @@ export class SessionManager {
   private storage: Storage;
 
   constructor(private config: SessionConfig = {}) {
-    this.storage =
-      config.storageType === "sessionStorage" ? sessionStorage : localStorage;
+    this.storage = this.createStorage();
 
     this.sessionId = this.loadOrCreateSessionId();
     this.loadCachedGeolocation();
+  }
+
+  private createStorage(): Storage {
+    // Check if we're in a browser environment
+    if (typeof globalThis !== "undefined" && globalThis.localStorage) {
+      if (
+        this.config.storageType === "sessionStorage" &&
+        globalThis.sessionStorage
+      ) {
+        return globalThis.sessionStorage;
+      }
+      return globalThis.localStorage;
+    }
+
+    // Fall back to memory storage for Node.js
+    return new MemoryStorage();
   }
 
   private loadOrCreateSessionId(): string {
@@ -60,10 +105,22 @@ export class SessionManager {
   }
 
   public generateJurisToken(): string {
-    const hasher = new Bun.CryptoHasher("md5");
-    hasher.update(this.sessionId + JURIS_TOKEN_SALT);
-    const hash = hasher.digest("hex");
-    return hash.substring(3, 17);
+    // Use platform-agnostic crypto implementation
+    if (typeof Bun !== "undefined" && Bun.CryptoHasher) {
+      // Bun environment
+      const hasher = new Bun.CryptoHasher("md5");
+      hasher.update(this.sessionId + JURIS_TOKEN_SALT);
+      const hash = hasher.digest("hex");
+      return hash.substring(3, 17);
+    } else {
+      // Node.js or browser environment
+      const crypto = require("crypto");
+      const hash = crypto
+        .createHash("md5")
+        .update(this.sessionId + JURIS_TOKEN_SALT)
+        .digest("hex");
+      return hash.substring(3, 17);
+    }
   }
 
   public setGeolocation(location: Geolocation): void {
