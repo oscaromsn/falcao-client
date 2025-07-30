@@ -1,0 +1,59 @@
+# Bun configuration file
+
+[install]
+# Prefer offline mode to speed up installs
+prefer-offline = true
+
+# Auto install peer dependencies
+auto = true
+
+# Save exact versions
+save-exact = false
+
+# Global cache directory
+globalDir = "~/.bun/install/global"
+
+[install.cache]
+# Cache directory
+dir = "~/.bun/install/cache"
+
+# Disable cache
+disable = false
+
+[install.lockfile]
+# Save lockfile
+save = true
+
+# Print a summary of the lockfile
+print = "yarn"
+
+[install.scopes]
+# Configure scoped registries if needed
+# "@mycompany" = "https://npm.mycompany.com/"
+
+[run]
+# Set bun to run in quiet mode
+silent = false
+
+# Disable bun's builtin TypeScript transpiler for node_modules
+transpilePackages = false
+
+[test]
+coverageThreshold = {}
+
+# Test configuration
+root = "./tests"
+preload = "./tests/setup.ts"
+timeout = 5000
+coverage = true
+coverageReporter = ["text", "lcov"]
+global = { lines = 80, functions = 80, branches = 80, statements = 80 }
+[debug]
+# Enable source maps
+sourcemap = "external"
+
+[bundler]
+# Bundler-specific settings (if you decide to bundle later)
+minify = false
+sourcemap = true
+target = "bun"

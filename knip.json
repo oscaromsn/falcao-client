@@ -1,0 +1,31 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [],
+  "project": [
+    "src/**/*.ts"
+  ],
+  "ignore": [],
+  "ignoreDependencies": [
+    "@modelcontextprotocol/sdk"
+  ],
+  "ignoreBinaries": [],
+  "ignoreExportsUsedInFile": true,
+  "rules": {
+    "binaries": "warn",
+    "dependencies": "error",
+    "devDependencies": "warn",
+    "duplicates": "error",
+    "enumMembers": "warn",
+    "exports": "warn",
+    "files": "error",
+    "nsExports": "warn",
+    "classMembers": "warn",
+    "types": "warn",
+    "nsTypes": "warn",
+    "unlisted": "warn",
+    "unresolved": "error"
+  },
+  "vitest": {
+    "config": "vitest.config.ts"
+  }
+}
