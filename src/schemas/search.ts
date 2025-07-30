@@ -1,5 +1,5 @@
+import { DocumentoSchema } from "@schemas/documents";
 import { z } from "zod";
-import { DocumentoSchema } from "./documents";
 
 // Search filter schema
 export const FiltroSchema = z.object({
