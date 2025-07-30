@@ -53,7 +53,9 @@ describe("HttpClient", () => {
       expect(axiosInstance.defaults.headers["Content-Type"]).toBe(
         "application/json"
       );
-      expect(axiosInstance.defaults.headers.Accept).toBe("application/json");
+      expect(axiosInstance.defaults.headers.Accept).toBe(
+        "application/json, text/plain, */*"
+      );
     });
 
     it("should use default timeout when not specified", () => {

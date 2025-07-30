@@ -80,7 +80,7 @@ describe("SearchService", () => {
       };
 
       const filters = {
-        colecao: ["colecao1", "colecao2"],
+        colecao: "colecao1,colecao2",
         tribunais: ["STF", "STJ"],
         nomeRelator: ["Relator 1", "Relator 2"],
         orgaoJulgador: ["Orgao 1", "Orgao 2"],
@@ -121,21 +121,11 @@ describe("SearchService", () => {
   describe("count", () => {
     it("should get search result count", async () => {
       const mockCountResponse = {
-        filtrosDisponiveis: [
-          {
-            nomeDoFiltro: "tribunal",
-            nomeWeb: "Tribunal",
-            ordem: 1,
-            valoresFiltro: [
-              {
-                valor: "STF",
-                quantidade: 150,
-                valorWeb: "Supremo Tribunal Federal",
-                valorBalao: "STF",
-              },
-            ],
-          },
-        ],
+        countPrecedentes: 863,
+        countAcordaos: 5_632_423,
+        countSentencas: 8_549_757,
+        countRR: 2_238_193,
+        countDecisoesMonocraticas: 1_810_935,
       };
 
       (httpClient.request as any) = async (config: any) => {
@@ -149,10 +139,8 @@ describe("SearchService", () => {
       const result = await searchService.count(filters);
 
       expect(result).toEqual(mockCountResponse);
-      expect(result.filtrosDisponiveis).toHaveLength(1);
-      expect(result.filtrosDisponiveis[0]?.valoresFiltro[0]?.quantidade).toBe(
-        150
-      );
+      expect(result.countAcordaos).toBe(5_632_423);
+      expect(result.countPrecedentes).toBe(863);
     });
 
     it("should apply array parameter transformation for count", async () => {
@@ -160,21 +148,11 @@ describe("SearchService", () => {
       (httpClient.request as any) = async (config: any) => {
         capturedParams = config.params;
         return {
-          filtrosDisponiveis: [
-            {
-              nomeDoFiltro: "tribunal",
-              nomeWeb: "Tribunal",
-              ordem: 1,
-              valoresFiltro: [
-                {
-                  valor: "STF",
-                  quantidade: 100,
-                  valorWeb: "Supremo Tribunal Federal",
-                  valorBalao: "STF",
-                },
-              ],
-            },
-          ],
+          countPrecedentes: 100,
+          countAcordaos: 500,
+          countSentencas: 300,
+          countRR: 200,
+          countDecisoesMonocraticas: 150,
         };
       };
 
@@ -251,8 +229,16 @@ describe("SearchService", () => {
   describe("getDataPublicationDate", () => {
     it("should get publication date information", async () => {
       const mockDataPub = {
-        dataPublicacao: "2024-01-15",
-        fonte: "Official Source",
+        dataAtualizacaoPrecedentes: [{ tribunal: "TST", data: "02/07/2025" }],
+        dataAtualizacaoPrecedentesBNP: [{ tribunal: "STF", data: null }],
+        dataAtualizacaoAcordao: [{ tribunal: "TRT2", data: "29/07/2025" }],
+        dataAtualizacaoSentenca: [{ tribunal: "TRT2", data: "29/07/2025" }],
+        dataAtualizacaoRecursoRevista: [
+          { tribunal: "TRT2", data: "29/07/2025" },
+        ],
+        dataAtualizacaoDecisaoMonocratica: [
+          { tribunal: "TST", data: "29/07/2025" },
+        ],
       };
 
       (httpClient.request as any) = async (config: any) => {
@@ -264,15 +250,26 @@ describe("SearchService", () => {
       const result = await searchService.getDataPublicationDate();
 
       expect(result).toEqual(mockDataPub);
-      expect(result.dataPublicacao).toBe("2024-01-15");
+      expect(result.dataAtualizacaoAcordao).toHaveLength(1);
+      expect(result.dataAtualizacaoAcordao[0]?.tribunal).toBe("TRT2");
     });
   });
 
   describe("getDataUpdateDate", () => {
     it("should get update date information", async () => {
       const mockDataUpdate = {
-        dataIndexacao: "2024-01-15",
-        ultimaAtualizacao: "2024-01-15T10:00:00Z",
+        dataAtualizacaoPrecedentes: [{ tribunal: "TST", data: "29/07/2025" }],
+        dataAtualizacaoPrecedentesBNP: [
+          { tribunal: "STF", data: "30/07/2025" },
+        ],
+        dataAtualizacaoAcordao: [{ tribunal: "TRT2", data: "30/07/2025" }],
+        dataAtualizacaoSentenca: [{ tribunal: "TRT2", data: "30/07/2025" }],
+        dataAtualizacaoRecursoRevista: [
+          { tribunal: "TRT2", data: "30/07/2025" },
+        ],
+        dataAtualizacaoDecisaoMonocratica: [
+          { tribunal: "TST", data: "30/07/2025" },
+        ],
       };
 
       (httpClient.request as any) = async (config: any) => {
@@ -284,21 +281,20 @@ describe("SearchService", () => {
       const result = await searchService.getDataUpdateDate();
 
       expect(result).toEqual(mockDataUpdate);
-      expect(result.dataIndexacao).toBe("2024-01-15");
+      expect(result.dataAtualizacaoAcordao).toHaveLength(1);
+      expect(result.dataAtualizacaoAcordao[0]?.tribunal).toBe("TRT2");
     });
   });
 
   describe("getSystemVersions", () => {
     it("should get system version information", async () => {
-      const mockVersions = {
-        versoes: [
-          {
-            versao: "1.2.3",
-            dataLancamento: "2024-01-15",
-            descricao: "Falcão Client version 1.2.3",
-          },
-        ],
-      };
+      const mockVersions = [
+        {
+          versao: "1.2.3",
+          data: "2024-01-15",
+          descricao: "Falcão Client version 1.2.3",
+        },
+      ];
 
       (httpClient.request as any) = async (config: any) => {
         expect(config.method).toBe("GET");
@@ -309,8 +305,8 @@ describe("SearchService", () => {
       const result = await searchService.getSystemVersions();
 
       expect(result).toEqual(mockVersions);
-      expect(result.versoes).toHaveLength(1);
-      expect(result.versoes[0]?.versao).toBe("1.2.3");
+      expect(result).toHaveLength(1);
+      expect(result[0]?.versao).toBe("1.2.3");
     });
   });
 

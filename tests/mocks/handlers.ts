@@ -45,21 +45,11 @@ export const handlers = [
   http.get(`${BASE_URL}/no-auth/pesquisa/count`, () => {
     // Return raw CountResponse - NO WRAPPER (matches real API)
     const response = {
-      filtrosDisponiveis: [
-        {
-          nomeDoFiltro: "tribunal",
-          nomeWeb: "Tribunal",
-          ordem: 1,
-          valoresFiltro: [
-            {
-              valor: "TST",
-              quantidade: 50,
-              valorWeb: "Tribunal Superior do Trabalho",
-              valorBalao: "TST",
-            },
-          ],
-        },
-      ],
+      countPrecedentes: 863,
+      countAcordaos: 5632423,
+      countSentencas: 8549757,
+      countRR: 2238193,
+      countDecisoesMonocraticas: 1810935,
     };
     return HttpResponse.json(response);
   }),
@@ -76,24 +66,28 @@ export const handlers = [
   }),
 
   http.get(`${BASE_URL}/no-auth/informacao/versao`, () => {
-    // Return raw object - NO WRAPPER (matches real API)
-    const response = {
-      versoes: [
-        {
-          versao: "2.12.1",
-          dataLancamento: "2025-07-28",
-          descricao: "Falcão Client version 2.12.1",
-        },
-      ],
-    };
+    // Return raw array - NO WRAPPER (matches real API)
+    const response = [
+      {
+        versao: "2.12.1",
+        data: "18 de Julho de 2025",
+        descricao: "Falcão Client version 2.12.1",
+      },
+    ];
     return HttpResponse.json(response);
   }),
 
   http.get(`${BASE_URL}/no-auth/informacao/dataIndexacaoDados`, () => {
     // Return raw object - NO WRAPPER (matches real API)
     const response = {
-      dataIndexacao: "2025-07-29",
-      ultimaAtualizacao: "2025-07-29T03:00:00Z",
+      dataAtualizacaoPrecedentes: [
+        { tribunal: "TST", data: "29/07/2025" },
+        { tribunal: "TRT9", data: "29/07/2025" },
+      ],
+      dataAtualizacaoAcordao: [
+        { tribunal: "TRT2", data: "30/07/2025" },
+        { tribunal: "TST", data: "30/07/2025" },
+      ],
     };
     return HttpResponse.json(response);
   }),
@@ -101,8 +95,11 @@ export const handlers = [
   http.get(`${BASE_URL}/no-auth/informacao/dataPublicacaoDados`, () => {
     // Return raw object - NO WRAPPER (matches real API)
     const response = {
-      dataPublicacao: "2025-07-29",
-      fonte: "Official Source",
+      dataAtualizacaoPrecedentes: [
+        { tribunal: "TST", data: "02/07/2025" },
+        { tribunal: "STF", data: null },
+      ],
+      dataAtualizacaoAcordao: [{ tribunal: "TRT2", data: "29/07/2025" }],
     };
     return HttpResponse.json(response);
   }),
