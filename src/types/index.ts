@@ -6,8 +6,15 @@
  * runtime validation matches compile-time types.
  */
 
-import type { Notification } from "@services/user";
+import type { Notification } from "../schemas/user";
 
+// Re-export admin types from schemas
+export type { CacheStatus } from "../schemas/admin";
+// Re-export AI types from schemas
+export type {
+  ConversationRequest,
+  ConversationResponse,
+} from "../schemas/ai";
 // Re-export common types
 export type {
   ErrorResponse,
@@ -15,7 +22,6 @@ export type {
   Pagination,
   RequisicaoForm,
 } from "../schemas/common";
-
 // Re-export document types
 export type {
   AcaoBotaoForm,
@@ -25,9 +31,7 @@ export type {
   DocumentResponse,
   TextoResponse,
 } from "../schemas/documents";
-
 export { DocumentoTipo } from "../schemas/documents";
-
 // Re-export search types
 export type {
   AutocompleteResponse,
@@ -38,19 +42,14 @@ export type {
   Tribunal,
   ValorFiltro,
 } from "../schemas/search";
-// Re-export admin types from service
-export type { CacheStatus } from "../services/admin";
-// Re-export AI types from service
-export type {
-  ConversationRequest,
-  ConversationResponse,
-} from "../services/ai";
-// Re-export user types from service
+// Re-export user types from schemas
 export type {
   Notification,
   SavedSearch,
   UserProfile,
-} from "../services/user";
+  UserStatistics,
+  WordCloudItem,
+} from "../schemas/user";
 
 // Additional utility types
 export interface PaginatedResponse<T> {
@@ -206,14 +205,20 @@ export namespace FalcaoAPI {
   export type SearchResponse = import("../schemas/search").SearchResponse;
 
   // User types
-  export type UserProfile = import("../services/user").UserProfile;
-  export type Notification = import("../services/user").Notification;
+  export type UserProfile = import("../schemas/user").UserProfile;
+  export type Notification = import("../schemas/user").Notification;
+  export type SavedSearch = import("../schemas/user").SavedSearch;
+  export type WordCloudItem = import("../schemas/user").WordCloudItem;
+  export type UserStatistics = import("../schemas/user").UserStatistics;
 
   // AI types
-  export type ConversationRequest =
-    import("../services/ai").ConversationRequest;
+  export type ConversationRequest = import("../schemas/ai").ConversationRequest;
   export type ConversationResponse =
-    import("../services/ai").ConversationResponse;
+    import("../schemas/ai").ConversationResponse;
+
+  // Admin types
+  export type CacheStatus = import("../schemas/admin").CacheStatus;
+  export type SystemInfo = import("../schemas/admin").SystemInfo;
 }
 
 // Type guards
