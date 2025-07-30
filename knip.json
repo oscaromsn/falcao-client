@@ -1,10 +1,18 @@
 {
   "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "entry": [],
-  "project": [
-    "src/**/*.ts"
+  "entry": [
+    "src/index.ts",
+    "tests/**/*.test.ts",
+    "tests/setup.ts",
+    "tests/mocks/**/*.ts"
   ],
-  "ignore": [],
+  "project": [
+    "src/**/*.ts",
+    "tests/**/*.ts"
+  ],
+  "ignore": [
+    "tests/utils/test-helpers.ts"
+  ],
   "ignoreDependencies": [
     "@modelcontextprotocol/sdk"
   ],
