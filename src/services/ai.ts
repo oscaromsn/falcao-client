@@ -1,19 +1,9 @@
 import type { HttpClient } from "@core/http";
+import {
+  type ConversationResponse,
+  ConversationResponseSchema,
+} from "@schemas/ai";
 import { BaseService } from "@services/base";
-import { z } from "zod";
-
-const ConversationRequestSchema = z.object({
-  model: z.string().default("mistralai/Mixtral-8x7B-Instruct-v0.1"),
-  title: z.string(),
-  preset_context: z.string(),
-});
-
-const ConversationResponseSchema = z.object({
-  conversationId: z.string(),
-});
-
-export type ConversationRequest = z.infer<typeof ConversationRequestSchema>;
-export type ConversationResponse = z.infer<typeof ConversationResponseSchema>;
 
 export class AIService extends BaseService {
   constructor(
