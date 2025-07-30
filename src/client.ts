@@ -1,3 +1,8 @@
+import {
+  DEFAULT_AI_BASE_URL,
+  DEFAULT_BASE_URL,
+  DEFAULT_TIMEOUT,
+} from "@core/constants";
 import { HttpClient, type HttpClientConfig } from "@core/http";
 import { type SessionConfig, SessionManager } from "@core/session";
 import type { Geolocation } from "@schemas/common";
@@ -8,8 +13,8 @@ import { SearchService } from "@services/search";
 import { UserService } from "@services/user";
 
 export interface FalcaoClientConfig {
-  baseURL: string;
-  aiBaseURL: string;
+  baseURL?: string;
+  aiBaseURL?: string;
   timeout?: number;
   sessionConfig?: SessionConfig;
   getAuthToken?: () => string | null | Promise<string | null>;
@@ -26,14 +31,14 @@ export class FalcaoClient {
   public readonly admin: AdminService;
   public readonly ai: AIService;
 
-  constructor(config: FalcaoClientConfig) {
+  constructor(config: FalcaoClientConfig = {}) {
     // Initialize session manager
     this.sessionManager = new SessionManager(config.sessionConfig);
 
     // Initialize HTTP client
     const httpConfig: HttpClientConfig = {
-      baseURL: config.baseURL,
-      timeout: config.timeout ?? 30000,
+      baseURL: config.baseURL ?? DEFAULT_BASE_URL,
+      timeout: config.timeout ?? DEFAULT_TIMEOUT,
       sessionManager: this.sessionManager,
       ...(config.getAuthToken && { getAuthToken: config.getAuthToken }),
       ...(config.onAuthError && { onAuthError: config.onAuthError }),
@@ -45,7 +50,10 @@ export class FalcaoClient {
     this.documents = new DocumentService(this.httpClient);
     this.user = new UserService(this.httpClient);
     this.admin = new AdminService(this.httpClient);
-    this.ai = new AIService(this.httpClient, config.aiBaseURL);
+    this.ai = new AIService(
+      this.httpClient,
+      config.aiBaseURL ?? DEFAULT_AI_BASE_URL
+    );
   }
 
   // Session management

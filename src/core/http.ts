@@ -1,3 +1,4 @@
+import { DEFAULT_BASE_URL, DEFAULT_TIMEOUT } from "@core/constants";
 import { FalcaoAuthenticationError, FalcaoNetworkError } from "@core/errors";
 import type { SessionManager } from "@core/session";
 import axios, {
@@ -7,7 +8,7 @@ import axios, {
 } from "axios";
 
 export interface HttpClientConfig {
-  baseURL: string;
+  baseURL?: string;
   timeout?: number;
   getAuthToken?: () => string | null | Promise<string | null>;
   sessionManager: SessionManager;
@@ -16,14 +17,23 @@ export interface HttpClientConfig {
 
 export class HttpClient {
   private axiosInstance: AxiosInstance;
+  private hasLoggedAuthError = false;
+  private hasLoggedRequest = false;
 
   constructor(private config: HttpClientConfig) {
     this.axiosInstance = axios.create({
-      baseURL: config.baseURL,
-      timeout: config.timeout || 30000,
+      baseURL: config.baseURL ?? DEFAULT_BASE_URL,
+      timeout: config.timeout ?? DEFAULT_TIMEOUT,
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
+        Accept: "application/json, text/plain, */*",
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Referer:
+          "https://jurisprudencia.jt.jus.br/jurisprudencia-nacional/home",
+        "sec-ch-ua": '"Chromium";v="120", "Not;A=Brand";v="99"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"macOS"',
       },
     });
 
@@ -40,6 +50,15 @@ export class HttpClient {
           ...commonParams,
           ...config.params,
         };
+
+        // Debug: log first request params
+        if (
+          config.url?.includes("/no-auth/pesquisa") &&
+          !this.hasLoggedRequest
+        ) {
+          this.hasLoggedRequest = true;
+          console.log("DEBUG: First request params:", config.params);
+        }
 
         // Add auth token for protected endpoints
         if (!config.url?.includes("/no-auth/") && this.config.getAuthToken) {
@@ -72,6 +91,19 @@ export class HttpClient {
             error.response?.status === 401 ||
             error.response?.status === 403
           ) {
+            // Debug: log first failure details
+            if (
+              error.config?.url?.includes("/no-auth/pesquisa") &&
+              !this.hasLoggedAuthError
+            ) {
+              this.hasLoggedAuthError = true;
+              console.log("DEBUG: First auth error details:");
+              console.log("URL:", error.config?.url);
+              console.log("Status:", error.response?.status);
+              console.log("Response type:", typeof error.response?.data);
+              console.log("Response data:", error.response?.data);
+            }
+
             this.config.onAuthError?.();
             throw new FalcaoAuthenticationError(
               error.response?.data?.userMessage || "Authentication failed"
