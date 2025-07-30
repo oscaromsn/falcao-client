@@ -12,6 +12,14 @@ export const UserProfileSchema = z.object({
       abrirDocumentosNovaAba: z.boolean(),
     })
     .optional(),
+  // Error flags for loading favorites
+  erroAoCarregarMagistradoFavorito: z.boolean().optional(),
+  erroAoCarregarOrgaoJulgadorFavorito: z.boolean().optional(),
+  erroAoCarregarTribunaisFavoritos: z.boolean().optional(),
+  // Cached favorites data
+  tribunaisFavoritos: z.array(z.any()).nullable().optional(),
+  orgaoJulgadorFavorito: z.any().nullable().optional(),
+  magistradoFavorito: z.any().nullable().optional(),
 });
 
 export const SavedSearchSchema = z.object({
