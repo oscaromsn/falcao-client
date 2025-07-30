@@ -4,6 +4,8 @@ import {
   DocumentoTipo,
   type DocumentResponse,
   DocumentResponseSchema,
+  type PdfAuthenticityResponse,
+  PdfAuthenticityResponseSchema,
   TextoResponseSchema,
 } from "@schemas/documents";
 import { BaseService } from "@services/base";
@@ -95,23 +97,15 @@ export class DocumentService extends BaseService {
     return response.data;
   }
 
-  async validatePdfAuthenticity(codigoAutenticidade: string) {
-    const schema = z.object({
-      valido: z.boolean(),
-      tipoDocumento: z.string().optional(),
-      tribunal: z.string().optional(),
-      idDocumento: z.string().optional(),
-      documento: z
-        .object({
-          tribunal: z.string(),
-          numeroProcesso: z.string(),
-          dataGeracao: z.string(),
-        })
-        .optional(),
-    });
-
-    return this.put("/no-auth/pdfInteiroTeor/validarAutenticidade", schema, {
-      codigoAutenticidade,
-    });
+  async validatePdfAuthenticity(
+    codigoAutenticidade: string
+  ): Promise<PdfAuthenticityResponse> {
+    return this.put(
+      "/no-auth/pdfInteiroTeor/validarAutenticidade",
+      PdfAuthenticityResponseSchema,
+      {
+        codigoAutenticidade,
+      }
+    );
   }
 }

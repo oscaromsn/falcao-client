@@ -55,6 +55,20 @@ export const TextoResponseSchema = z.object({
   texto: z.string(),
 });
 
+export const PdfAuthenticityResponseSchema = z.object({
+  valido: z.boolean(),
+  tipoDocumento: z.string().optional(),
+  tribunal: z.string().optional(),
+  idDocumento: z.string().optional(),
+  documento: z
+    .object({
+      tribunal: z.string(),
+      numeroProcesso: z.string(),
+      dataGeracao: z.string(),
+    })
+    .optional(),
+});
+
 // Types
 export type BaseDocumento = z.infer<typeof BaseDocumentoSchema>;
 export type Documento = z.infer<typeof DocumentoSchema>;
@@ -62,3 +76,6 @@ export type AcaoBotaoForm = z.infer<typeof AcaoBotaoFormSchema>;
 export type DocumentResponse = z.infer<typeof DocumentResponseSchema>;
 export type CitacaoResponse = z.infer<typeof CitacaoResponseSchema>;
 export type TextoResponse = z.infer<typeof TextoResponseSchema>;
+export type PdfAuthenticityResponse = z.infer<
+  typeof PdfAuthenticityResponseSchema
+>;
