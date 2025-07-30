@@ -32,8 +32,14 @@ export class SearchService extends BaseService {
     filters: Filtro,
     pagination: Pagination
   ): Promise<SearchResponse> {
+    // Default to "acordaos" collection if none specified
+    const filtersWithDefaults = {
+      ...filters,
+      colecao: filters.colecao || "acordaos",
+    };
+
     const params = {
-      ...this.buildArrayParams(filters, this.arrayFields),
+      ...this.buildArrayParams(filtersWithDefaults, this.arrayFields),
       ...pagination,
     };
 
@@ -41,7 +47,13 @@ export class SearchService extends BaseService {
   }
 
   async count(filters: Filtro): Promise<CountResponse> {
-    const params = this.buildArrayParams(filters, this.arrayFields);
+    // Default to "acordaos" collection if none specified
+    const filtersWithDefaults = {
+      ...filters,
+      colecao: filters.colecao || "acordaos",
+    };
+
+    const params = this.buildArrayParams(filtersWithDefaults, this.arrayFields);
     return this.get("/no-auth/pesquisa/count", CountResponseSchema, params);
   }
 
