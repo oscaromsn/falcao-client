@@ -58,6 +58,8 @@ export const CountResponseSchema = z.object({
 // Autocomplete response
 export const AutocompleteResponseSchema = z.object({
   sugestoes: z.array(z.string()),
+  tempoElasticsearch: z.number().optional(),
+  tempoConsultaCompleta: z.number().optional(),
   queriesRelated: z
     .array(
       z.object({
