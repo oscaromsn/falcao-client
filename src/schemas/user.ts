@@ -1,3 +1,4 @@
+import { FiltroSchema, TribunalSchema } from "@schemas/search";
 import { z } from "zod";
 
 // User schemas
@@ -17,16 +18,16 @@ export const UserProfileSchema = z.object({
   erroAoCarregarOrgaoJulgadorFavorito: z.boolean().optional(),
   erroAoCarregarTribunaisFavoritos: z.boolean().optional(),
   // Cached favorites data
-  tribunaisFavoritos: z.array(z.any()).nullable().optional(),
-  orgaoJulgadorFavorito: z.any().nullable().optional(),
-  magistradoFavorito: z.any().nullable().optional(),
+  tribunaisFavoritos: z.array(TribunalSchema).nullable().optional(),
+  orgaoJulgadorFavorito: z.string().nullable().optional(),
+  magistradoFavorito: z.string().nullable().optional(),
 });
 
 export const SavedSearchSchema = z.object({
   id: z.string(),
   titulo: z.string(),
   dataCriacao: z.string(),
-  filtro: z.any(), // Reference to Filtro schema
+  filtro: FiltroSchema,
 });
 
 export const NotificationSchema = z.object({
