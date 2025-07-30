@@ -52,15 +52,22 @@ export const createMockSearchResponse = (
   ...overrides,
 });
 
+// DEPRECATED: Real Falcão API returns RAW data without ApiResponse<T> wrapper
+// Use grounded mock helpers instead
 export const createMockApiResponse = <T>(
   data: T,
   overrides: Partial<ApiResponse<T>> = {}
-): ApiResponse<T> => ({
-  data,
-  status: 200,
-  timestamp: new Date().toISOString(),
-  ...overrides,
-});
+): ApiResponse<T> => {
+  console.warn(
+    "⚠️  createMockApiResponse is deprecated - Real API returns raw data. Use grounded helpers instead."
+  );
+  return {
+    data,
+    status: 200,
+    timestamp: new Date().toISOString(),
+    ...overrides,
+  };
+};
 
 export const createMockErrorResponse = (
   overrides: Partial<ErrorResponse> = {}

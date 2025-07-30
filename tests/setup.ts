@@ -19,6 +19,30 @@ Object.defineProperty(globalThis, "crypto", {
   },
 });
 
+// Mock Bun.CryptoHasher for session manager
+if (typeof Bun === "undefined") {
+  (globalThis as any).Bun = {
+    CryptoHasher: class {
+      private data = "";
+      update(data: string) {
+        this.data += data;
+      }
+      digest(_encoding: string) {
+        // Use underscore to indicate unused parameter
+        // Simple mock hash - not cryptographically secure, just for testing
+        let hash = 0;
+        for (let i = 0; i < this.data.length; i++) {
+          const char = this.data.charCodeAt(i);
+          hash = (hash << 5) - hash + char;
+          hash = hash & hash; // Convert to 32bit integer
+        }
+        const hexHash = Math.abs(hash).toString(16).padStart(8, "0");
+        return hexHash + hexHash; // Double to make it longer like MD5
+      }
+    },
+  };
+}
+
 // Setup global vi for tests
 (globalThis as any).vi = vi;
 
