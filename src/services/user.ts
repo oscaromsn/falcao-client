@@ -1,5 +1,5 @@
 import type { RequisicaoForm } from "@schemas/common";
-import { type Tribunal, TribunalSchema } from "@schemas/search";
+import { type Filtro, type Tribunal, TribunalSchema } from "@schemas/search";
 import {
   type Notification,
   NotificationSchema,
@@ -89,7 +89,7 @@ export class UserService extends BaseService {
 
   async saveSearch(
     titulo: string,
-    filtro: any,
+    filtro: Filtro,
     requisicao: RequisicaoForm
   ): Promise<SavedSearch> {
     return this.post("/pesquisasFavoritas", SavedSearchSchema, {
