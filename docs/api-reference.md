@@ -179,25 +179,25 @@ Performs a comprehensive search across all document collections.
 {
   "documentos": [
     {
-      "numeroProcesso": "1000418-17.2025.5.90.0000",
-      "siglaClasseProcesso": "PCA",
-      "classeProcesso": "Procedimento de Controle Administrativo",
-      "relator": "MARCIA ANDREA FARIAS DA SILVA",
-      "tribunal": "CSJT",
-      "idGabinete": null,
-      "gabinete": null,
-      "idTurma": 31,
-      "turma": "Conselho Superior da Justiça do Trabalho",
-      "textoAcordao": "<html>...A C Ó R D Ã O...</html>",
-      "ementa": "AGRAVO REGIMENTAL...",
+      "tribunal": "TRT16",
+      "numeroProcesso": "0016121-44.2022.5.16.0008",
+      "classeProcesso": "Recurso Ordinário Trabalhista",
+      "siglaClasseProcesso": "ROT",
+      "relator": "JAMES MAGNO ARAUJO FARIAS",
+      "dataJulgamento": "25/07/2023",
+      "dataJuntada": "26/07/2023",
+      "turma": "2ª Turma",
+      "idTurma": 8,
+      "gabinete": "Gab. Des. James Magno Araújo Farias",
+      "idGabinete": 51,
+      "ementa": "<p class=\"western\" style=\"padding-left: 200px; font-style: normal;\">EMENTA CONTENT...</p>",
+      "textoAcordao": "<table border=\"0\" style=\"text-align: center;\">...FULL DECISION TEXT...</table>",
       "possuiEmenta": "S",
-      "idDocumentoAcordao": "doc-12345",
-      "highlightTextoAcordaoAnonimizado": "texto destacado",
-      "highlightEmenta": "ementa destacada",
-      "highlightTextoAcordao": "acórdão destacado",
-      "referenciaLegislativa": [],
-      "dataJulgamento": "2025-07-15",
-      "dataJuntada": "2025-07-16"
+      "idDocumentoAcordao": "7992279",
+      "highlightTextoAcordaoAnonimizado": "PROCESSO nº 0016121-44.2022.5.16.0008 ( ROT ) highlighted text...",
+      "highlightEmenta": "<p class=\"western\">highlighted ementa content...</p>",
+      "highlightTextoAcordao": "<table border=\"0\">highlighted decision text...</table>",
+      "referenciaLegislativa": ["art_224_clt", "lei_8213_art_15"]
     }
   ],
   "filtrosDisponiveis": [
@@ -205,12 +205,12 @@ Performs a comprehensive search across all document collections.
       "ordem": 1,
       "nomeDoFiltro": "colecao",
       "nomeWeb": "Coleção",
-      "colecao": null,
+      "colecao": "acordaos",
       "valoresFiltro": [
         {
           "valor": "acordaos",
           "valorWeb": "Acórdãos",
-          "quantidade": 7843774,
+          "quantidade": 9908669,
           "valorBalao": "Acórdãos"
         },
         {
@@ -225,12 +225,38 @@ Performs a comprehensive search across all document collections.
   "quantidadeTotal": 10000,
   "temasTopFive": [
     {
-      "numeroProcesso": "0001234-56.2024.5.01.0000",
-      "tribunal": "TRT1",
-      "relator": "DESEMBARGADOR JOSÉ SILVA",
-      "dataJulgamento": null,
-      "classeProcessual": null,
-      "referenciaLegislativa": "Lei 8.213/91"
+      "id": "RG-8-13891-STF",
+      "tribunal": "TRT9",
+      "tituloDecisao": "SÚMULA 8, DO TRT DA 9ª REGIÃO",
+      "origemDocumentos": "BANJUR",
+      "descricaoTribunal": "Tribunal Regional do Trabalho da 9ª Região",
+      "categoria": "RG",
+      "tituloCategoria": "Repercussão Geral",
+      "numero": "8",
+      "idTema": "13-sum_8_trt9",
+      "situacao": {
+        "valor": "EM_VIGOR",
+        "descricao": "Em Vigor"
+      },
+      "pendenteDecisao": false,
+      "sumula": true,
+      "teseJuridicaPrevalecente": false,
+      "orientacaoJurisprudencial": false,
+      "baseJuridicaAntiga": true,
+      "conteudoDecisao": "<p><strong>SÚMULA Nº 8, DO TRT DA 9ª REGIÃO</strong></p>",
+      "relator": "MARCO AURÉLIO",
+      "orgao": "13891",
+      "descricaoOrgao": "Supremo Tribunal Federal",
+      "dataJulgamento": "25/01/2016",
+      "classeProcessual": "IUJ",
+      "questao": "Súmula 85, IV, do TST - Regime 12 x 36",
+      "referenciaLegislativa": ["TST, Súmula 85"],
+      "assuntos": [
+        {
+          "codigo": 55228,
+          "descricao": "Contratuais"
+        }
+      ]
     }
   ]
 }
@@ -930,18 +956,42 @@ Base model for all document types:
 
 ```typescript
 interface Documento {
-  id: string | number;
+  // Core identification
   tribunal: string;
   numeroProcesso: string;
-  tituloDecisao: string;
-  ementa?: string;
+  idDocumentoAcordao: string;
+  
+  // Process classification
+  classeProcesso: string;
+  siglaClasseProcesso: string;
+  
+  // Content fields
+  ementa: string;
+  textoAcordao: string;
+  possuiEmenta: string; // "S" or "N"
+  
+  // Judicial information
+  relator: string;
+  dataJulgamento: string;
+  dataJuntada: string;
+  turma: string;
+  idTurma: number;
+  gabinete: string;
+  idGabinete: number;
+  
+  // Highlight fields for search results
+  highlightTextoAcordaoAnonimizado: string;
+  highlightEmenta: string;
+  highlightTextoAcordao: string;
+  
+  // Legal references
+  referenciaLegislativa: string[];
+  
+  // Additional fields may vary by document type and search context
+  id?: string | number;
+  tituloDecisao?: string;
   textoCompleto?: string;
-  relator?: string;
-  dataJulgamento?: string;
   orgaoJulgador?: string;
-  classeProcessual?: string;
-  siglaClasseProcesso?: string;
-  // Additional fields vary by document type
 }
 ```
 
@@ -974,15 +1024,15 @@ interface FiltroDisponivel {
   nomeDoFiltro: string;
   nomeWeb: string;
   ordem: number;
-  colecao?: string | null;       // Additional field in API
+  colecao: string | null;        // Collection identifier, can be null
   valoresFiltro: ValorFiltro[];
 }
 
 interface ValorFiltro {
   valor: string;
-  quantidade: number | null;     // Can be null in API responses
-  valorWeb?: string;
-  valorBalao?: string | null;    // Can be null in API responses
+  quantidade: number;            // Count of results with this filter value
+  valorWeb: string;              // Display name for web interface
+  valorBalao: string;            // Display name for balloon/tooltip
 }
 ```
 
@@ -995,6 +1045,122 @@ interface Notification {
   descricao: string;
   dataCadastro: string; // ISO 8601
   lido: boolean;
+}
+```
+
+#### TemasTopFive (Legal Themes)
+
+```typescript
+interface TemasTopFive {
+  // Core identification
+  id: string;
+  tribunal: string;
+  tituloDecisao: string;
+  origemDocumentos: string;     // e.g., "BANJUR"
+  descricaoTribunal: string;
+  
+  // Legal categorization
+  categoria: string;            // e.g., "RG" (Repercussão Geral)
+  tituloCategoria: string;
+  numero: string;
+  idTema: string;
+  
+  // Status and flags
+  situacao: {
+    valor: string;              // e.g., "EM_VIGOR"
+    descricao: string;          // e.g., "Em Vigor"
+  };
+  pendenteDecisao: boolean;
+  sumula: boolean;
+  teseJuridicaPrevalecente: boolean;
+  orientacaoJurisprudencial: boolean;
+  baseJuridicaAntiga: boolean;
+  
+  // Content fields
+  conteudoDecisao: string;
+  relator: string;
+  orgao: string;
+  descricaoOrgao: string;
+  
+  // Optional detailed information
+  classeProcessual?: string | null;
+  dataJulgamento?: string | null;
+  dataPublicacao?: string | null;
+  dataAdmissao?: string | null;
+  dataInstauracaoIac?: string | null;
+  dataSituacao?: string | null;
+  dataTransitoJulgado?: string | null;
+  dataJulgamentoEmbargos?: null;
+  
+  // Decision content
+  decisao?: string | null;
+  tese?: string | null;
+  questao?: string | null;
+  titulo?: string | null;
+  texto?: string | null;
+  teorDecisao?: string | null;
+  
+  // Legal references
+  referenciaLegislativa?: string[] | null;
+  assuntos?: {
+    codigo: number;
+    descricao: string;
+  }[] | null;
+  
+  // Judgment details
+  nomeRelator?: string | null;
+  nomeRedator?: string | null;
+  orgaoJudicante?: string | null;
+  orgaoJulgador?: string | null;
+  
+  // Numbering systems
+  numeroSumula?: string | null;
+  numeroTema?: string | null;
+  numeroTemaSobrestado?: string | null;
+  numeroTeseJuridicaPrevalecente?: string | null;
+  numeroOrientacaoJurisprudencial?: string | null;
+  orientacaoJurisprudencialRA_SE?: string | null;
+  
+  // Additional metadata
+  observacao?: string | null;
+  tipo?: string | null;         // e.g., "SUMULA"
+  link?: string | null;
+  vistaRegimental?: string | null;
+  suspensaoGeral?: string | null;
+  
+  // Suspension details
+  limiteSuspensao?: {
+    parametro: string;          // e.g., "SUSPENSAO_NACIONAL"
+    dataSuspensao?: string | null;
+    dataFimSuspensao?: null;
+    linkDecisao?: string | null;
+    detalheAbrangenciaEspecifica?: null;
+  } | null;
+  
+  // Related processes
+  processosIncidente?: null;
+  processosParadigma?: {
+    link: string;
+    numero: string;
+    classe?: null;
+  }[] | null;
+  
+  // Highlight fields for search results
+  highlightQuestao?: string | null;
+  highlightTese?: string | null;
+  highlightTextoAcordaoDecisao?: null;
+  highlightTextoAcordaoMerito?: string | null;
+  highlightTextoDecisaoAdmissao?: string | null;
+  highlightTextoDecisaoSuspensao?: string | null;
+  highlightTextoEmentaAdmissao?: string | null;
+  highlightTextoEmentaMerito?: string | null;
+  
+  // Full text content fields
+  textoAcordaoMerito?: string | null;
+  textoDecisaoAdmissao?: string | null;
+  textoDecisaoSuspensao?: string | null;
+  textoEmentaAdmissao?: string | null;
+  textoEmentaMerito?: string | null;
 }
 ```
 
@@ -1019,7 +1185,7 @@ interface SearchResponse {
   documentos: Documento[];
   filtrosDisponiveis: FiltroDisponivel[];
   quantidadeTotal: number;
-  temasTopFive?: Documento[];
+  temasTopFive: TemasTopFive[];
 }
 ```
 
