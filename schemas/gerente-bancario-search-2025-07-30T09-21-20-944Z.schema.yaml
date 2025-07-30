@@ -1,0 +1,621 @@
+sourceFile: examples/output/gerente-bancario-search-2025-07-30T09-21-20-944Z.json
+type: object
+properties:
+  documentos:
+    type: array
+    nullable: false
+    items:
+      type: object
+      properties:
+        classeProcesso:
+          type: string
+          nullable: false
+          uniqueValues: 1
+          example: Recurso Ordinário Trabalhista
+        dataJulgamento:
+          type: string
+          nullable: false
+          uniqueValues: 10
+          example: 25/07/2023
+        dataJuntada:
+          type: string
+          nullable: false
+          uniqueValues: 10
+          example: 26/07/2023
+        ementa:
+          type: string
+          nullable: false
+          uniqueValues: 10
+          example: '<p class="western" style="padding-left: 200px; fon...'
+        gabinete:
+          type: string
+          nullable: false
+          uniqueValues: 8
+          example: Gab. Des. James Magno Araújo Farias
+        highlightEmenta:
+          type: string
+          nullable: false
+          uniqueValues: 10
+          example: '<p class="western" style="padding-left: 200px; fon...'
+        highlightTextoAcordao:
+          type: string
+          nullable: false
+          uniqueValues: 10
+          example: '<table border="0" style="text-align: center; line-...'
+        highlightTextoAcordaoAnonimizado:
+          type: string
+          nullable: false
+          uniqueValues: 10
+          example: PROCESSO nº  0016121-44.2022.5.16.0008   ( ROT )  ...
+        idDocumentoAcordao:
+          type: string
+          nullable: false
+          uniqueValues: 10
+          example: '7992279'
+        idGabinete:
+          type: integer
+          nullable: false
+          uniqueValues: 8
+          example: 51
+        idTurma:
+          type: integer
+          nullable: false
+          uniqueValues: 4
+          example: 8
+        numeroProcesso:
+          type: string
+          nullable: false
+          uniqueValues: 9
+          example: 0016121-44.2022.5.16.0008
+        possuiEmenta:
+          type: string
+          nullable: false
+          uniqueValues: 2
+          example: S
+        referenciaLegislativa:
+          type: array
+          nullable: false
+          uniqueValues: 10
+          items:
+            type: string
+            example: art_224_clt
+          example: Array of 10 items
+        relator:
+          type: string
+          nullable: false
+          uniqueValues: 7
+          example: JAMES MAGNO ARAUJO FARIAS
+        siglaClasseProcesso:
+          type: string
+          nullable: false
+          uniqueValues: 1
+          example: ROT
+        textoAcordao:
+          type: string
+          nullable: false
+          uniqueValues: 10
+          example: '<table border="0" style="text-align: center; line-...'
+        tribunal:
+          type: string
+          nullable: false
+          uniqueValues: 2
+          example: TRT16
+        turma:
+          type: string
+          nullable: false
+          uniqueValues: 4
+          example: 2ª Turma
+      required:
+        - tribunal
+        - numeroProcesso
+        - ementa
+        - textoAcordao
+        - relator
+        - dataJulgamento
+        - classeProcesso
+        - siglaClasseProcesso
+        - turma
+        - idTurma
+        - gabinete
+        - idGabinete
+        - possuiEmenta
+        - idDocumentoAcordao
+        - highlightTextoAcordaoAnonimizado
+        - highlightEmenta
+        - highlightTextoAcordao
+        - referenciaLegislativa
+        - dataJuntada
+    example: Array of 10 items
+  filtrosDisponiveis:
+    type: array
+    nullable: false
+    items:
+      type: object
+      properties:
+        colecao:
+          type: string
+          nullable: true
+          uniqueValues: 1
+          example: acordaos
+        nomeDoFiltro:
+          type: string
+          nullable: false
+          uniqueValues: 7
+          example: colecao
+        nomeWeb:
+          type: string
+          nullable: false
+          uniqueValues: 7
+          example: Coleção
+        ordem:
+          type: integer
+          nullable: false
+          uniqueValues: 7
+          example: 1
+        valoresFiltro:
+          type: array
+          nullable: false
+          uniqueValues: 7
+          items:
+            type: object
+            properties:
+              quantidade:
+                type: integer
+                nullable: false
+                uniqueValues: 5
+                example: 9908669
+              valor:
+                type: string
+                nullable: false
+                uniqueValues: 5
+                example: acordaos
+              valorBalao:
+                type: string
+                nullable: false
+                uniqueValues: 5
+                example: Acórdãos
+              valorWeb:
+                type: string
+                nullable: false
+                uniqueValues: 5
+                example: Acórdãos
+            required:
+              - valor
+              - quantidade
+              - valorWeb
+              - valorBalao
+          example: Array of 5 items
+      required:
+        - nomeDoFiltro
+        - nomeWeb
+        - ordem
+        - valoresFiltro
+    example: Array of 7 items
+  quantidadeTotal:
+    type: integer
+    nullable: false
+    example: 10000
+  temasTopFive:
+    type: array
+    nullable: false
+    items:
+      type: object
+      properties:
+        assuntos:
+          type: array
+          nullable: true
+          uniqueValues: 16
+          items:
+            type: object
+            properties:
+              codigo:
+                type: integer
+                nullable: false
+                uniqueValues: 1
+                example: 55228
+              descricao:
+                type: string
+                nullable: false
+                uniqueValues: 1
+                example: Contratuais
+            required:
+              - codigo
+              - descricao
+          example: Array of 1 items
+        baseJuridicaAntiga:
+          type: boolean
+          nullable: false
+          uniqueValues: 2
+          example: true
+        categoria:
+          type: string
+          nullable: false
+          uniqueValues: 4
+          example: RG
+        classeProcessual:
+          type: string
+          nullable: true
+          uniqueValues: 5
+          example: IUJ
+        conteudoDecisao:
+          type: string
+          nullable: false
+          uniqueValues: 12
+          example: <p><strong>SÚMULA Nº <MARK>8</MARK>, DO TRT DA 9ª ...
+        dataAdmissao:
+          type: string
+          nullable: true
+          uniqueValues: 12
+          example: 30/04/2015
+        dataInstauracaoIac:
+          type: string
+          nullable: true
+          uniqueValues: 1
+          example: 16/08/2018
+        dataJulgamento:
+          type: string
+          nullable: true
+          uniqueValues: 13
+          example: 25/01/2016
+        dataJulgamentoEmbargos:
+          type: 'null'
+        dataPublicacao:
+          type: string
+          nullable: true
+          uniqueValues: 10
+          example: 20/10/2008
+        dataSituacao:
+          type: string
+          nullable: true
+          uniqueValues: 5
+          example: 17/10/2024
+        dataTransitoJulgado:
+          type: string
+          nullable: true
+          uniqueValues: 7
+          example: 22/02/2016
+        decisao:
+          type: string
+          nullable: true
+          uniqueValues: 5
+          example: OBS:Em processo de revisão IRDR tema 20 Aprovada a...
+        descricaoOrgao:
+          type: string
+          nullable: false
+          uniqueValues: 6
+          example: Supremo Tribunal Federal
+        descricaoTribunal:
+          type: string
+          nullable: false
+          uniqueValues: 7
+          example: Tribunal Regional do Trabalho da 9ª Região
+        highlightQuestao:
+          type: string
+          nullable: true
+          uniqueValues: 5
+          example: OGMO 4 - Eficácia da cláusula <MARK>coletiva</MARK...
+        highlightTese:
+          type: string
+          nullable: true
+          uniqueValues: 6
+          example: '[Decisão]: OBS:Em processo de revisão IRDR tema 20...'
+        highlightTextoAcordaoDecisao:
+          type: 'null'
+        highlightTextoAcordaoMerito:
+          type: string
+          nullable: true
+          uniqueValues: 3
+          example: "PODER JUDICIÁRIO\r\nJUSTIÇA DO TRABALHO\r\nTRIBUNAL RE..."
+        highlightTextoDecisaoAdmissao:
+          type: string
+          nullable: true
+          uniqueValues: 4
+          example: "PODER JUDICIÁRIO\r\nJUSTIÇA DO TRABALHO\r\nTRIBUNAL RE..."
+        highlightTextoDecisaoSuspensao:
+          type: string
+          nullable: true
+          uniqueValues: 2
+          example: Vistos, etc. Admitido e instaurado o presente IRDR...
+        highlightTextoEmentaAdmissao:
+          type: string
+          nullable: true
+          uniqueValues: 2
+          example: INCIDENTE DE ARGUIÇÃO DE RESOLUÇÃO DE DEMANDAS REP...
+        highlightTextoEmentaMerito:
+          type: string
+          nullable: true
+          uniqueValues: 4
+          example: "EMENTA\r\nTESE JURÍDICA:VALIDADE DE NORMA <MARK>COLE..."
+        id:
+          type: string
+          nullable: false
+          uniqueValues: 8
+          example: RG-8-13891-STF
+        idTema:
+          type: string
+          nullable: false
+          uniqueValues: 12
+          example: 13-sum_8_trt9
+        limiteSuspensao:
+          type: object
+          nullable: true
+          uniqueValues: 5
+          properties:
+            dataFimSuspensao:
+              type: 'null'
+            dataSuspensao:
+              type: string
+              nullable: true
+              uniqueValues: 4
+              example: 04/09/2017
+            detalheAbrangenciaEspecifica:
+              type: 'null'
+            linkDecisao:
+              type: string
+              nullable: true
+              uniqueValues: 4
+              example: https://consultadocumento.tst.jus.br/consultaDocum...
+            parametro:
+              type: string
+              nullable: false
+              uniqueValues: 3
+              example: SUSPENSAO_NACIONAL
+          required:
+            - parametro
+        link:
+          type: string
+          nullable: true
+          uniqueValues: 6
+          example: https://www.trt9.jus.br/portal/arquivos/4826343
+        nomeRedator:
+          type: string
+          nullable: true
+          uniqueValues: 6
+          example: MARLENE TERESINHA FUVERKI SUGUIMATSU
+        nomeRelator:
+          type: string
+          nullable: true
+          uniqueValues: 6
+          example: MARLENE TERESINHA FUVERKI SUGUIMATSU
+        numero:
+          type: string
+          nullable: false
+          uniqueValues: 2
+          example: '8'
+        numeroOrientacaoJurisprudencial:
+          type: string
+          nullable: true
+          uniqueValues: 1
+          example: '8'
+        numeroSumula:
+          type: string
+          nullable: true
+          uniqueValues: 1
+          example: '8'
+        numeroTema:
+          type: string
+          nullable: true
+          uniqueValues: 2
+          example: '8'
+        numeroTemaSobrestado:
+          type: string
+          nullable: true
+          uniqueValues: 2
+          example: '0'
+        numeroTeseJuridicaPrevalecente:
+          type: string
+          nullable: true
+          uniqueValues: 1
+          example: '8'
+        observacao:
+          type: string
+          nullable: true
+          uniqueValues: 4
+          example: (mantida) - Res. 121/2003, DJ 19, 20 e 21.11.2003
+        orgao:
+          type: string
+          nullable: false
+          uniqueValues: 6
+          example: '13891'
+        orgaoJudicante:
+          type: string
+          nullable: true
+          uniqueValues: 3
+          example: SEÇÃO ESPECIALIZADA EM DISSÍDIOS COLETIVOS - SDC
+        orgaoJulgador:
+          type: string
+          nullable: true
+          uniqueValues: 6
+          example: SDC
+        orientacaoJurisprudencial:
+          type: boolean
+          nullable: false
+          uniqueValues: 2
+          example: false
+        orientacaoJurisprudencialRA_SE:
+          type: string
+          nullable: true
+          uniqueValues: 1
+          example: 003/2008
+        origemDocumentos:
+          type: string
+          nullable: false
+          uniqueValues: 2
+          example: BANJUR
+        pendenteDecisao:
+          type: boolean
+          nullable: false
+          uniqueValues: 1
+          example: false
+        processosIncidente:
+          type: 'null'
+        processosParadigma:
+          type: array
+          nullable: true
+          uniqueValues: 13
+          items:
+            type: object
+            properties:
+              classe:
+                type: 'null'
+              link:
+                type: string
+                nullable: false
+                uniqueValues: 1
+                example: https://pje.trt9.jus.br/segundograu/Processo/Consu...
+              numero:
+                type: string
+                nullable: false
+                uniqueValues: 1
+                example: 0000487-71.2015.5.09.0000
+            required:
+              - link
+              - numero
+          example: Array of 1 items
+        questao:
+          type: string
+          nullable: true
+          uniqueValues: 12
+          example: Súmula 85, IV, do TST - Regime 12 x 36 (oriundo da...
+        referenciaLegislativa:
+          type: array
+          nullable: true
+          uniqueValues: 11
+          items:
+            type: string
+            example: TST, Súmula 85
+          example: Array of 1 items
+        relator:
+          type: string
+          nullable: false
+          uniqueValues: 7
+          example: MARCO AURÉLIO
+        situacao:
+          type: object
+          nullable: false
+          uniqueValues: 10
+          properties:
+            descricao:
+              type: string
+              nullable: false
+              uniqueValues: 8
+              example: Em Vigor
+            valor:
+              type: string
+              nullable: false
+              uniqueValues: 10
+              example: EM_VIGOR
+          required:
+            - valor
+            - descricao
+        sumula:
+          type: boolean
+          nullable: false
+          uniqueValues: 2
+          example: true
+        suspensaoGeral:
+          type: string
+          nullable: true
+          uniqueValues: 6
+          example: 'Rito: art. 101-B RI/TRT9'
+        teorDecisao:
+          type: string
+          nullable: true
+          uniqueValues: 6
+          example: O regime 12 x 36 é um <MARK>acordo</MARK> de compe...
+        tese:
+          type: string
+          nullable: true
+          uniqueValues: 17
+          example: A juntada de documentos na fase recursal só se jus...
+        teseJuridicaPrevalecente:
+          type: boolean
+          nullable: false
+          uniqueValues: 2
+          example: false
+        texto:
+          type: string
+          nullable: true
+          uniqueValues: 2
+          example: <p><strong>SÚMULA Nº <MARK>8</MARK>, DO TRT DA 9ª ...
+        textoAcordaoMerito:
+          type: string
+          nullable: true
+          uniqueValues: 5
+          example: Considerando o limite de caracteres do campo, o in...
+        textoDecisaoAdmissao:
+          type: string
+          nullable: true
+          uniqueValues: 5
+          example: "Processo: ED-E-RR - 1086-51.2012.5.15.0031\r\n\r\nDeci..."
+        textoDecisaoSuspensao:
+          type: string
+          nullable: true
+          uniqueValues: 3
+          example: "PROCESSO Nº TST-IRR-1086-51.2012.5.15.0031\r\nC/J PR..."
+        textoEmentaAdmissao:
+          type: string
+          nullable: true
+          uniqueValues: 4
+          example: INCIDENTE DE RESOLUÇÃO DE DEMANDAS REPETITIVAS. RE...
+        textoEmentaMerito:
+          type: string
+          nullable: true
+          uniqueValues: 5
+          example: NCIDENTE DE RECURSO REPETITIVO. AGENTE DE APOIO SO...
+        tipo:
+          type: string
+          nullable: true
+          uniqueValues: 2
+          example: SUMULA
+        titulo:
+          type: string
+          nullable: true
+          uniqueValues: 4
+          example: JUNTADA DE DOCUMENTO.
+        tituloCategoria:
+          type: string
+          nullable: false
+          uniqueValues: 4
+          example: Repercussão Geral
+        tituloDecisao:
+          type: string
+          nullable: false
+          uniqueValues: 6
+          example: SÚMULA 8, DO TRT DA 9ª REGIÃO
+        tribunal:
+          type: string
+          nullable: false
+          uniqueValues: 7
+          example: TRT9
+        vistaRegimental:
+          type: string
+          nullable: true
+          uniqueValues: 3
+          example: 30/10/2023
+      required:
+        - tribunal
+        - tituloDecisao
+        - origemDocumentos
+        - descricaoTribunal
+        - situacao
+        - pendenteDecisao
+        - idTema
+        - sumula
+        - teseJuridicaPrevalecente
+        - orientacaoJurisprudencial
+        - baseJuridicaAntiga
+        - conteudoDecisao
+        - id
+        - relator
+        - numero
+        - categoria
+        - tituloCategoria
+        - orgao
+        - descricaoOrgao
+    example: Array of 20 items
+required:
+  - documentos
+  - filtrosDisponiveis
+  - quantidadeTotal
+  - temasTopFive

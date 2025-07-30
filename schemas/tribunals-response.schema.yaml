@@ -1,0 +1,19 @@
+sourceFile: scripts/debug/analysis-output/tribunals-response.json
+type: array
+items:
+  type: object
+  properties:
+    nome:
+      type: string
+      nullable: false
+      uniqueValues: 20
+      example: Tribunal Superior do Trabalho
+    sigla:
+      type: string
+      nullable: false
+      uniqueValues: 20
+      example: TST
+  required:
+    - sigla
+    - nome
+example: Array of 28 items

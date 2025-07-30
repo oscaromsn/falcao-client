@@ -1,0 +1,46 @@
+sourceFile: scripts/debug/analysis-output/autocomplete-response.json
+type: object
+properties:
+  queriesRelated:
+    type: array
+    nullable: false
+    items:
+      type: object
+      properties:
+        queryRelated:
+          type: array
+          nullable: false
+          uniqueValues: 5
+          items:
+            type: string
+            example: contradita de testemunha
+          example: Array of 19 items
+        queryString:
+          type: string
+          nullable: false
+          uniqueValues: 5
+          example: contradita de testemunha
+      required:
+        - queryString
+        - queryRelated
+    example: Array of 5 items
+  sugestoes:
+    type: array
+    nullable: false
+    items:
+      type: string
+      example: contradita de testemunha
+    example: Array of 5 items
+  tempoConsultaCompleta:
+    type: integer
+    nullable: false
+    example: 5
+  tempoElasticsearch:
+    type: integer
+    nullable: false
+    example: 5
+required:
+  - sugestoes
+  - tempoElasticsearch
+  - tempoConsultaCompleta
+  - queriesRelated
