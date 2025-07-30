@@ -369,14 +369,9 @@ describe("Search Endpoints E2E Tests", () => {
         sugestoes: expect.any(Array),
       });
 
-      // These fields are optional but if present should be numbers
-      if (result.tempoElasticsearch !== undefined) {
-        expect(typeof result.tempoElasticsearch).toBe("number");
-      }
-
-      if (result.tempoConsultaCompleta !== undefined) {
-        expect(typeof result.tempoConsultaCompleta).toBe("number");
-      }
+      // These fields are required and should be numbers
+      expect(typeof result.tempoElasticsearch).toBe("number");
+      expect(typeof result.tempoConsultaCompleta).toBe("number");
     });
   });
 

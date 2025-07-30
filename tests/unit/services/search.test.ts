@@ -176,6 +176,8 @@ describe("SearchService", () => {
           "constitutional amendment",
           "constitutional court",
         ],
+        tempoElasticsearch: 5,
+        tempoConsultaCompleta: 8,
         queriesRelated: [],
       };
 
@@ -194,7 +196,12 @@ describe("SearchService", () => {
     });
 
     it("should handle empty autocomplete query", async () => {
-      const mockResponse = { sugestoes: [], queriesRelated: [] };
+      const mockResponse = {
+        sugestoes: [],
+        tempoElasticsearch: 2,
+        tempoConsultaCompleta: 3,
+        queriesRelated: [],
+      };
 
       httpClient.request = async () => mockResponse as any;
 
