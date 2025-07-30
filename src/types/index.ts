@@ -233,7 +233,7 @@ export namespace FalcaoAPI {
 export const isErrorResponse = (
   response: any
 ): response is import("../schemas/common").ErrorResponse => {
-  return (
+  return !!(
     response &&
     typeof response.status === "number" &&
     typeof response.error === "string" &&
@@ -244,7 +244,7 @@ export const isErrorResponse = (
 export const isDocumento = (
   obj: any
 ): obj is import("../schemas/documents").Documento => {
-  return (
+  return !!(
     obj &&
     (typeof obj.id === "string" || typeof obj.id === "number") &&
     typeof obj.tribunal === "string" &&
@@ -255,7 +255,7 @@ export const isDocumento = (
 export const isPaginatedResponse = <T>(
   obj: any
 ): obj is PaginatedResponse<T> => {
-  return (
+  return !!(
     obj &&
     Array.isArray(obj.content) &&
     typeof obj.totalElements === "number" &&
