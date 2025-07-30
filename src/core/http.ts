@@ -17,8 +17,6 @@ export interface HttpClientConfig {
 
 export class HttpClient {
   private axiosInstance: AxiosInstance;
-  private hasLoggedAuthError = false;
-  private hasLoggedRequest = false;
 
   constructor(private config: HttpClientConfig) {
     this.axiosInstance = axios.create({
@@ -51,15 +49,6 @@ export class HttpClient {
           ...config.params,
         };
 
-        // Debug: log first request params
-        if (
-          config.url?.includes("/no-auth/pesquisa") &&
-          !this.hasLoggedRequest
-        ) {
-          this.hasLoggedRequest = true;
-          console.log("DEBUG: First request params:", config.params);
-        }
-
         // Add auth token for protected endpoints
         if (!config.url?.includes("/no-auth/") && this.config.getAuthToken) {
           try {
@@ -91,19 +80,6 @@ export class HttpClient {
             error.response?.status === 401 ||
             error.response?.status === 403
           ) {
-            // Debug: log first failure details
-            if (
-              error.config?.url?.includes("/no-auth/pesquisa") &&
-              !this.hasLoggedAuthError
-            ) {
-              this.hasLoggedAuthError = true;
-              console.log("DEBUG: First auth error details:");
-              console.log("URL:", error.config?.url);
-              console.log("Status:", error.response?.status);
-              console.log("Response type:", typeof error.response?.data);
-              console.log("Response data:", error.response?.data);
-            }
-
             this.config.onAuthError?.();
             throw new FalcaoAuthenticationError(
               error.response?.data?.userMessage || "Authentication failed"
