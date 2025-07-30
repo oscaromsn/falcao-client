@@ -1,40 +1,19 @@
 import type { RequisicaoForm } from "@schemas/common";
 import { type Tribunal, TribunalSchema } from "@schemas/search";
+import {
+  type Notification,
+  NotificationSchema,
+  type SavedSearch,
+  SavedSearchSchema,
+  type UserProfile,
+  UserProfileSchema,
+  type UserStatistics,
+  UserStatisticsSchema,
+  type WordCloudItem,
+  WordCloudItemSchema,
+} from "@schemas/user";
 import { BaseService } from "@services/base";
 import { z } from "zod";
-
-// User schemas
-const UserProfileSchema = z.object({
-  id: z.string(),
-  nome: z.string(),
-  email: z.email(),
-  utilizaIARobusto: z.boolean(),
-  configuracoes: z
-    .object({
-      resultadosPorPagina: z.number(),
-      abrirDocumentosNovaAba: z.boolean(),
-    })
-    .optional(),
-});
-
-const SavedSearchSchema = z.object({
-  id: z.string(),
-  titulo: z.string(),
-  dataCriacao: z.string(),
-  filtro: z.any(), // Reference to Filtro schema
-});
-
-const NotificationSchema = z.object({
-  id: z.number(),
-  titulo: z.string(),
-  descricao: z.string(),
-  dataCadastro: z.string(),
-  lido: z.boolean(),
-});
-
-export type UserProfile = z.infer<typeof UserProfileSchema>;
-export type SavedSearch = z.infer<typeof SavedSearchSchema>;
-export type Notification = z.infer<typeof NotificationSchema>;
 
 export class UserService extends BaseService {
   // Profile endpoints
@@ -145,34 +124,11 @@ export class UserService extends BaseService {
   }
 
   // Analytics
-  async getWordCloud(): Promise<Array<{ text: string; weight: number }>> {
-    return this.get(
-      "/logAcesso/nuvemPalavras",
-      z.array(
-        z.object({
-          text: z.string(),
-          weight: z.number(),
-        })
-      )
-    );
+  async getWordCloud(): Promise<WordCloudItem[]> {
+    return this.get("/logAcesso/nuvemPalavras", z.array(WordCloudItemSchema));
   }
 
-  async getUserStatistics(): Promise<{
-    totalPesquisas: number;
-    documentosVisualizados: number;
-    citacoesGeradas: number;
-    ranking: number;
-    totalUsuarios: number;
-  }> {
-    return this.get(
-      "/logAcesso/estatisticas",
-      z.object({
-        totalPesquisas: z.number(),
-        documentosVisualizados: z.number(),
-        citacoesGeradas: z.number(),
-        ranking: z.number(),
-        totalUsuarios: z.number(),
-      })
-    );
+  async getUserStatistics(): Promise<UserStatistics> {
+    return this.get("/logAcesso/estatisticas", UserStatisticsSchema);
   }
 }
