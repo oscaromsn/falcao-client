@@ -7,9 +7,9 @@ export const CacheStatusSchema = z.object({
   tamanho: z.number(),
   totalEmUso: z.number(),
   totalBuscadoNoCache: z.number(),
-  percentualAcessoCache: z.number(),
+  percentualAcessoCache: z.string(),
   totalBuscadoForaDoCache: z.number(),
-  percentualForaDoCache: z.number(),
+  percentualForaDoCache: z.string(),
 });
 
 export const SystemInfoSchema = z.object({
