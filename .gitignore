@@ -48,3 +48,4 @@ repomix-output.xml
 debug_artifacts
 scripts/debug/**
 **/todo.md
+examples/output/**
