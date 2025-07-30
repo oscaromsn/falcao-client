@@ -47,6 +47,8 @@ export type {
   ConversationResponse,
   CountResponse,
   CustomDateFilter,
+  DataPublication,
+  DataUpdate,
   DateFilter,
   DeepPartial,
   DocumentActionType,
@@ -79,11 +81,15 @@ export type {
   SearchResponse,
   SessionId,
   SystemStatus,
+  SystemVersions,
   TextoResponse,
   Tribunal,
   UserPreferences,
   UserProfile,
+  UserRanking,
+  UserStatistics,
   ValorFiltro,
+  WordCloudItem,
 } from "./types";
 // Export non-type values from types
 export {

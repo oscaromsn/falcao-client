@@ -36,9 +36,12 @@ export { DocumentoTipo } from "../schemas/documents";
 export type {
   AutocompleteResponse,
   CountResponse,
+  DataPublication,
+  DataUpdate,
   Filtro,
   FiltroDisponivel,
   SearchResponse,
+  SystemVersions,
   Tribunal,
   ValorFiltro,
 } from "../schemas/search";
@@ -47,6 +50,7 @@ export type {
   Notification,
   SavedSearch,
   UserProfile,
+  UserRanking,
   UserStatistics,
   WordCloudItem,
 } from "../schemas/user";
@@ -203,6 +207,9 @@ export namespace FalcaoAPI {
   // Search types
   export type Filtro = import("../schemas/search").Filtro;
   export type SearchResponse = import("../schemas/search").SearchResponse;
+  export type SystemVersions = import("../schemas/search").SystemVersions;
+  export type DataUpdate = import("../schemas/search").DataUpdate;
+  export type DataPublication = import("../schemas/search").DataPublication;
 
   // User types
   export type UserProfile = import("../schemas/user").UserProfile;
@@ -210,6 +217,7 @@ export namespace FalcaoAPI {
   export type SavedSearch = import("../schemas/user").SavedSearch;
   export type WordCloudItem = import("../schemas/user").WordCloudItem;
   export type UserStatistics = import("../schemas/user").UserStatistics;
+  export type UserRanking = import("../schemas/user").UserRanking;
 
   // AI types
   export type ConversationRequest = import("../schemas/ai").ConversationRequest;
