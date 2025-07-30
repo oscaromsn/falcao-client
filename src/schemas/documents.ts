@@ -1,40 +1,61 @@
 import { z } from "zod";
+import {
+  OptionalDateSchema,
+  OptionalNumberIdSchema,
+  OptionalStringIdSchema,
+  ReferenciaLegislativaSchema,
+} from "./common";
+import { AllHighlightFieldsSchema } from "./highlight";
 
-// Base document schema - updated to match actual API response
-export const BaseDocumentoSchema = z.object({
-  id: z.union([z.string(), z.number()]).optional(), // API sometimes doesn't include id
+/**
+ * Modular document schemas based on real API structure
+ * Separates concerns and allows for type-specific extensions
+ */
+
+// Core document fields present in most document types
+export const CoreDocumentFieldsSchema = z.object({
   tribunal: z.string(),
-  numeroProcesso: z.string().optional(), // API sometimes doesn't include numeroProcesso
-  tituloDecisao: z.string().optional(), // API sometimes doesn't include tituloDecisao
+  numeroProcesso: z.string().optional(),
   ementa: z.string().optional(),
-  textoCompleto: z.string().optional(),
-  textoAcordao: z.string().optional(), // Actual field name in API
+  textoAcordao: z.string().optional(),
   relator: z.string().optional(),
-  dataJulgamento: z.string().nullable().optional(), // API returns null sometimes
-  orgaoJulgador: z.string().nullable().optional(), // Can be null or undefined in temasTopFive
-  classeProcessual: z.string().nullable().optional(), // API returns null sometimes
-  classeProcesso: z.string().optional(), // Actual field name in API
+  dataJulgamento: OptionalDateSchema,
+  classeProcesso: z.string().optional(),
   siglaClasseProcesso: z.string().optional(),
-  turma: z.string().optional(),
-  idTurma: z.number().optional(),
-  gabinete: z.string().nullable().optional(),
-  idGabinete: z.number().nullable().optional(),
-  possuiEmenta: z.union([z.boolean(), z.string()]).optional(), // API returns string like "S"/"N"
-  idDocumentoAcordao: z.string().optional(),
-  highlightTextoAcordaoAnonimizado: z
-    .union([z.array(z.string()), z.string()])
-    .optional(), // API can return string
-  highlightEmenta: z.union([z.array(z.string()), z.string()]).optional(), // API can return string
-  highlightTextoAcordao: z.union([z.array(z.string()), z.string()]).optional(), // API can return string
-  referenciaLegislativa: z
-    .union([z.array(z.any()), z.string()])
-    .nullable()
-    .optional(), // API can return string, null, or be undefined
-  dataJuntada: z.string().optional(),
+  possuiEmenta: z.union([z.boolean(), z.string()]).optional(),
+  referenciaLegislativa: ReferenciaLegislativaSchema,
+  dataJuntada: OptionalDateSchema,
 });
 
-// Extended document schema with additional fields
-export const DocumentoSchema = BaseDocumentoSchema.loose();
+// Acordão-specific fields (from extracted schema)
+export const AcordaoFieldsSchema = z.object({
+  idDocumentoAcordao: OptionalStringIdSchema,
+  turma: z.string().optional(),
+  idTurma: OptionalNumberIdSchema,
+  gabinete: z.string().nullable().optional(),
+  idGabinete: z.number().nullable().optional(),
+});
+
+// Extended document fields for complex documents
+export const ExtendedDocumentFieldsSchema = z.object({
+  id: z.union([z.string(), z.number()]).optional(),
+  tituloDecisao: z.string().optional(),
+  textoCompleto: z.string().optional(),
+  orgaoJulgador: z.string().nullable().optional(),
+  classeProcessual: z.string().nullable().optional(),
+});
+
+// Base document schema combining core fields
+export const BaseDocumentoSchema = CoreDocumentFieldsSchema.merge(
+  ExtendedDocumentFieldsSchema
+).merge(AllHighlightFieldsSchema);
+
+// Acordão document schema
+export const AcordaoDocumentoSchema =
+  BaseDocumentoSchema.merge(AcordaoFieldsSchema);
+
+// Flexible document schema for mixed responses
+export const DocumentoSchema = BaseDocumentoSchema.partial();
 
 // Document types enum
 export enum DocumentoTipo {
@@ -88,7 +109,13 @@ export const PdfAuthenticityResponseSchema = z.object({
 });
 
 // Types
+export type CoreDocumentFields = z.infer<typeof CoreDocumentFieldsSchema>;
+export type AcordaoFields = z.infer<typeof AcordaoFieldsSchema>;
+export type ExtendedDocumentFields = z.infer<
+  typeof ExtendedDocumentFieldsSchema
+>;
 export type BaseDocumento = z.infer<typeof BaseDocumentoSchema>;
+export type AcordaoDocumento = z.infer<typeof AcordaoDocumentoSchema>;
 export type Documento = z.infer<typeof DocumentoSchema>;
 export type AcaoBotaoForm = z.infer<typeof AcaoBotaoFormSchema>;
 export type DocumentResponse = z.infer<typeof DocumentResponseSchema>;

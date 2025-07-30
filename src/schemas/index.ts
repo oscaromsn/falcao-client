@@ -26,42 +26,86 @@ export {
   ConversationResponseSchema,
 } from "./ai";
 export type {
-  ErrorResponse,
   // Types
+  Assunto,
+  ErrorResponse,
   Geolocation,
+  LimiteSuspensao,
   Pagination,
+  ProcessoParadigma,
+  ReferenciaLegislativa,
   RequisicaoForm,
+  Situacao,
 } from "./common";
 // Re-export everything from common schemas
 export {
   ApiResponseSchema,
+  AssuntoSchema,
   ErrorResponseSchema,
   // Schemas
   GeolocationSchema,
+  LimiteSuspensaoSchema,
+  OptionalDateSchema,
+  OptionalNumberIdSchema,
+  OptionalStringIdSchema,
   PaginationSchema,
+  ProcessoParadigmaSchema,
+  ReferenciaLegislativaItemSchema,
+  ReferenciaLegislativaSchema,
+  RequiredDateSchema,
   RequisicaoFormSchema,
+  SituacaoSchema,
 } from "./common";
 export type {
   AcaoBotaoForm,
+  AcordaoDocumento,
+  AcordaoFields,
   // Types
   BaseDocumento,
   CitacaoResponse,
+  CoreDocumentFields,
   Documento,
   DocumentResponse,
+  ExtendedDocumentFields,
   TextoResponse,
 } from "./documents";
 // Re-export everything from document schemas
 export {
   AcaoBotaoFormSchema,
+  AcordaoDocumentoSchema,
+  AcordaoFieldsSchema,
   // Schemas
   BaseDocumentoSchema,
   CitacaoResponseSchema,
+  CoreDocumentFieldsSchema,
   DocumentoSchema,
   // Enums
   DocumentoTipo,
   DocumentResponseSchema,
+  ExtendedDocumentFieldsSchema,
   TextoResponseSchema,
 } from "./documents";
+
+// Re-export highlight schemas
+export type {
+  AllHighlightFields,
+  BaseHighlightField,
+  HighlightEmenta,
+  HighlightQuestao,
+  HighlightTese,
+  HighlightTextoAcordao,
+  HighlightTextoAcordaoAnonimizado,
+  HighlightTextoAcordaoDecisao,
+  HighlightTextoAcordaoMerito,
+  HighlightTextoDecisaoAdmissao,
+  HighlightTextoDecisaoSuspensao,
+  HighlightTextoEmentaAdmissao,
+  HighlightTextoEmentaMerito,
+} from "./highlight";
+export {
+  AllHighlightFieldsSchema,
+  BaseHighlightFieldSchema,
+} from "./highlight";
 export type {
   AutocompleteResponse,
   CountResponse,
@@ -81,6 +125,9 @@ export {
   SearchResponseSchema,
   TribunalSchema,
 } from "./search";
+// Re-export tema schemas
+export type { TemaTopFiveItem } from "./tema";
+export { TemaTopFiveItemSchema } from "./tema";
 export type {
   Notification,
   SavedSearch,

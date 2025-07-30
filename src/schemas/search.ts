@@ -1,5 +1,6 @@
-import { DocumentoSchema } from "@schemas/documents";
 import { z } from "zod";
+import { DocumentoSchema } from "./documents";
+import { TemaTopFiveItemSchema } from "./tema";
 
 // Search filter schema
 export const FiltroSchema = z.object({
@@ -43,12 +44,12 @@ const FiltroDisponivelSchema = z.object({
   valoresFiltro: z.array(ValorFiltroSchema),
 });
 
-// Search response
+// Search response - updated with proper TemaTopFive schema
 export const SearchResponseSchema = z.object({
   documentos: z.array(DocumentoSchema),
   filtrosDisponiveis: z.array(FiltroDisponivelSchema),
   quantidadeTotal: z.number(),
-  temasTopFive: z.array(DocumentoSchema).optional(),
+  temasTopFive: z.array(TemaTopFiveItemSchema),
 });
 
 // Count response - actual API structure

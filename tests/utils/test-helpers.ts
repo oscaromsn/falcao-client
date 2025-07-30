@@ -1,6 +1,7 @@
 import type { ErrorResponse } from "@schemas/common";
 import type { Documento } from "@schemas/documents";
 import type { SearchResponse } from "@schemas/search";
+import type { TemaTopFiveItem } from "@schemas/tema";
 import type { FalcaoClientConfig } from "@/client";
 import type {
   ApiResponse,
@@ -28,6 +29,34 @@ export const createMockDocument = (
   ...overrides,
 });
 
+export const createMockTemaTopFiveItem = (
+  overrides: Partial<TemaTopFiveItem> = {}
+): TemaTopFiveItem => ({
+  tribunal: "STF",
+  tituloDecisao: "TEST TEMA DECISION",
+  origemDocumentos: "BANJUR",
+  descricaoTribunal: "Supremo Tribunal Federal",
+  situacao: {
+    valor: "EM_VIGOR",
+    descricao: "Em Vigor",
+  },
+  pendenteDecisao: false,
+  idTema: "test-tema-1",
+  sumula: true,
+  teseJuridicaPrevalecente: false,
+  orientacaoJurisprudencial: false,
+  baseJuridicaAntiga: false,
+  conteudoDecisao: "Test decision content for tema",
+  id: "tema-id-123",
+  relator: "TEST RELATOR",
+  numero: "1",
+  categoria: "RG",
+  tituloCategoria: "Repercussão Geral",
+  orgao: "13891",
+  descricaoOrgao: "Supremo Tribunal Federal",
+  ...overrides,
+});
+
 export const createMockSearchResponse = (
   overrides: Partial<SearchResponse> = {}
 ): SearchResponse => ({
@@ -48,7 +77,7 @@ export const createMockSearchResponse = (
     },
   ],
   quantidadeTotal: 100,
-  temasTopFive: [],
+  temasTopFive: [createMockTemaTopFiveItem()],
   ...overrides,
 });
 

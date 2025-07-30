@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+/**
+ * Shared primitive schemas used across multiple API responses
+ * These match the exact structure and terminology from the real API
+ */
+
 // Geolocation schema
 export const GeolocationSchema = z.object({
   latitude: z.number(),
@@ -42,8 +47,57 @@ export const ErrorResponseSchema = z.object({
   path: z.string(),
 });
 
+// Situacao object used in tema responses
+export const SituacaoSchema = z.object({
+  valor: z.string(),
+  descricao: z.string(),
+});
+
+// Assunto object used in tema responses
+export const AssuntoSchema = z.object({
+  codigo: z.number(),
+  descricao: z.string(),
+});
+
+// ProcessoParadigma object used in tema responses
+export const ProcessoParadigmaSchema = z.object({
+  numero: z.string(),
+  link: z.string().nullable(), // link can be null
+  classe: z.string().nullable().optional(),
+});
+
+// LimiteSuspensao object used in tema responses
+export const LimiteSuspensaoSchema = z.object({
+  dataSuspensao: z.string().nullable().optional(),
+  dataFimSuspensao: z.string().nullable().optional(),
+  detalheAbrangenciaEspecifica: z.string().nullable().optional(),
+  linkDecisao: z.string().nullable().optional(),
+  parametro: z.string(),
+});
+
+// Base reference legislativa item (used in multiple contexts)
+export const ReferenciaLegislativaItemSchema = z.string();
+
+// Reference legislativa - can be array or string or null
+export const ReferenciaLegislativaSchema = z
+  .union([z.array(ReferenciaLegislativaItemSchema), z.string(), z.null()])
+  .optional();
+
+// Common date fields (some APIs return null, some return undefined)
+export const OptionalDateSchema = z.string().nullable().optional();
+export const RequiredDateSchema = z.string();
+
+// Common ID fields
+export const OptionalStringIdSchema = z.string().optional();
+export const OptionalNumberIdSchema = z.number().optional();
+
 // Types
 export type Geolocation = z.infer<typeof GeolocationSchema>;
 export type RequisicaoForm = z.infer<typeof RequisicaoFormSchema>;
 export type Pagination = z.infer<typeof PaginationSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+export type Situacao = z.infer<typeof SituacaoSchema>;
+export type Assunto = z.infer<typeof AssuntoSchema>;
+export type ProcessoParadigma = z.infer<typeof ProcessoParadigmaSchema>;
+export type LimiteSuspensao = z.infer<typeof LimiteSuspensaoSchema>;
+export type ReferenciaLegislativa = z.infer<typeof ReferenciaLegislativaSchema>;
