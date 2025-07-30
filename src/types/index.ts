@@ -6,7 +6,7 @@
  * runtime validation matches compile-time types.
  */
 
-import type { Notification } from "../services/user";
+import type { Notification } from "@services/user";
 
 // Re-export common types
 export type {

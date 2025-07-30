@@ -1,11 +1,11 @@
-import { HttpClient, type HttpClientConfig } from "./core/http";
-import { type SessionConfig, SessionManager } from "./core/session";
-import type { Geolocation } from "./schemas/common";
-import { AdminService } from "./services/admin";
-import { AIService } from "./services/ai";
-import { DocumentService } from "./services/documents";
-import { SearchService } from "./services/search";
-import { UserService } from "./services/user";
+import { HttpClient, type HttpClientConfig } from "@core/http";
+import { type SessionConfig, SessionManager } from "@core/session";
+import type { Geolocation } from "@schemas/common";
+import { AdminService } from "@services/admin";
+import { AIService } from "@services/ai";
+import { DocumentService } from "@services/documents";
+import { SearchService } from "@services/search";
+import { UserService } from "@services/user";
 
 export interface FalcaoClientConfig {
   baseURL: string;
