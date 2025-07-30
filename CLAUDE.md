@@ -231,21 +231,64 @@ export const createMockDocumento = (overrides?: Partial<Documento>): Documento =
   numeroProcesso: "12345",
   ...overrides
 });
+
+// MANDATORY: Wrap all API responses with consistent format
+export const createMockApiResponse = <T>(
+  data: T,
+  overrides: Partial<ApiResponse<T>> = {}
+): ApiResponse<T> => ({
+  data,
+  status: 200,
+  timestamp: new Date().toISOString(),
+  ...overrides,
+});
+
+// For error responses, use proper ErrorResponse schema
+export const createMockErrorResponse = (
+  overrides: Partial<ErrorResponse> = {}
+): ErrorResponse => ({
+  timestamp: new Date().toISOString(),
+  status: 500,
+  error: "Internal Server Error",
+  message: "An error occurred while processing the request",
+  path: "/api/test",
+  ...overrides,
+});
 ```
 
 #### MSW Handlers (`tests/mocks/handlers.ts`)
+**CRITICAL**: All mock handlers must use consistent `ApiResponse<T>` wrapping via `createMockApiResponse()`:
+
 ```typescript
-// Mirror actual API endpoints with realistic responses
+// ✅ CORRECT: Mirror actual API endpoints with consistent response format
 export const handlers = [
   http.post("/api/search", ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get("consulta");
     
-    return HttpResponse.json(createMockSearchResponse({
+    const mockResponse = createMockApiResponse(createMockSearchResponse({
       totalElements: query === "empty" ? 0 : 10
     }));
+    return HttpResponse.json(mockResponse);
+  }),
+
+  // Error responses must also use consistent wrapping
+  http.get("/error/500", () => {
+    const mockError = createMockErrorResponse({
+      status: 500,
+      error: "Internal Server Error",
+      path: "/error/500",
+    });
+    const mockResponse = createMockApiResponse(mockError, { status: 500 });
+    return HttpResponse.json(mockResponse, { status: 500 });
   })
 ];
+```
+
+**❌ NEVER do this** - raw responses without ApiResponse wrapper:
+```typescript
+// This breaks consistency with real API format
+return HttpResponse.json({ error: "Server Error" });
 ```
 
 ### Coverage Requirements
@@ -262,6 +305,9 @@ export const handlers = [
 
 ### Mock Strategy
 1. **HTTP Requests**: Use MSW (Mock Service Worker) for API mocking
+   - **MANDATORY**: All HTTP responses must use `createMockApiResponse()` wrapper
+   - **Error responses**: Use `createMockErrorResponse()` + `createMockApiResponse()` pattern
+   - **Consistency**: Real API format is `{ data: T, status?, timestamp? }` - mocks must match
 2. **External Dependencies**: Use Vitest's `vi.mock()` for modules
 3. **Browser APIs**: Mock localStorage, fetch, etc. in test setup
 4. **Time/Dates**: Use `vi.useFakeTimers()` for deterministic testing
