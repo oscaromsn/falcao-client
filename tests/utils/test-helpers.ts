@@ -1,3 +1,4 @@
+import type { ErrorResponse } from "@schemas/common";
 import type { Documento } from "@schemas/documents";
 import type { SearchResponse } from "@schemas/search";
 import type { FalcaoClientConfig } from "@/client";
@@ -58,6 +59,17 @@ export const createMockApiResponse = <T>(
   data,
   status: 200,
   timestamp: new Date().toISOString(),
+  ...overrides,
+});
+
+export const createMockErrorResponse = (
+  overrides: Partial<ErrorResponse> = {}
+): ErrorResponse => ({
+  timestamp: new Date().toISOString(),
+  status: 500,
+  error: "Internal Server Error",
+  message: "An error occurred while processing the request",
+  path: "/api/test",
   ...overrides,
 });
 
