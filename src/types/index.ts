@@ -6,22 +6,22 @@
  * runtime validation matches compile-time types.
  */
 
-import type { Notification } from "../schemas/user";
+import type { Notification } from "@schemas/user";
 
 // Re-export admin types from schemas
-export type { CacheStatus } from "../schemas/admin";
+export type { CacheStatus } from "@schemas/admin";
 // Re-export AI types from schemas
 export type {
   ConversationRequest,
   ConversationResponse,
-} from "../schemas/ai";
+} from "@schemas/ai";
 // Re-export common types
 export type {
   ErrorResponse,
   Geolocation,
   Pagination,
   RequisicaoForm,
-} from "../schemas/common";
+} from "@schemas/common";
 // Re-export document types
 export type {
   AcaoBotaoForm,
@@ -30,8 +30,8 @@ export type {
   Documento,
   DocumentResponse,
   TextoResponse,
-} from "../schemas/documents";
-export { DocumentoTipo } from "../schemas/documents";
+} from "@schemas/documents";
+export { DocumentoTipo } from "@schemas/documents";
 // Re-export search types
 export type {
   AutocompleteResponse,
@@ -44,7 +44,7 @@ export type {
   SystemVersions,
   Tribunal,
   ValorFiltro,
-} from "../schemas/search";
+} from "@schemas/search";
 // Re-export user types from schemas
 export type {
   Notification,
@@ -53,7 +53,7 @@ export type {
   UserRanking,
   UserStatistics,
   WordCloudItem,
-} from "../schemas/user";
+} from "@schemas/user";
 
 // Additional utility types
 export interface PaginatedResponse<T> {
@@ -125,8 +125,8 @@ export interface SearchOperators {
 export interface AdvancedSearchBuilder {
   baseQuery?: string;
   operators?: SearchOperators;
-  filters?: import("../schemas/search").Filtro;
-  pagination?: import("../schemas/common").Pagination;
+  filters?: import("@schemas/search").Filtro;
+  pagination?: import("@schemas/common").Pagination;
 }
 
 // Response status types
@@ -196,43 +196,42 @@ export interface RateLimitInfo {
 // Export grouped types for better organization
 export namespace FalcaoAPI {
   // Common types
-  export type Geolocation = import("../schemas/common").Geolocation;
-  export type RequisicaoForm = import("../schemas/common").RequisicaoForm;
-  export type Pagination = import("../schemas/common").Pagination;
+  export type Geolocation = import("@schemas/common").Geolocation;
+  export type RequisicaoForm = import("@schemas/common").RequisicaoForm;
+  export type Pagination = import("@schemas/common").Pagination;
 
   // Document types
-  export type Documento = import("../schemas/documents").Documento;
-  export type DocumentoTipo = import("../schemas/documents").DocumentoTipo;
+  export type Documento = import("@schemas/documents").Documento;
+  export type DocumentoTipo = import("@schemas/documents").DocumentoTipo;
 
   // Search types
-  export type Filtro = import("../schemas/search").Filtro;
-  export type SearchResponse = import("../schemas/search").SearchResponse;
-  export type SystemVersions = import("../schemas/search").SystemVersions;
-  export type DataUpdate = import("../schemas/search").DataUpdate;
-  export type DataPublication = import("../schemas/search").DataPublication;
+  export type Filtro = import("@schemas/search").Filtro;
+  export type SearchResponse = import("@schemas/search").SearchResponse;
+  export type SystemVersions = import("@schemas/search").SystemVersions;
+  export type DataUpdate = import("@schemas/search").DataUpdate;
+  export type DataPublication = import("@schemas/search").DataPublication;
 
   // User types
-  export type UserProfile = import("../schemas/user").UserProfile;
-  export type Notification = import("../schemas/user").Notification;
-  export type SavedSearch = import("../schemas/user").SavedSearch;
-  export type WordCloudItem = import("../schemas/user").WordCloudItem;
-  export type UserStatistics = import("../schemas/user").UserStatistics;
-  export type UserRanking = import("../schemas/user").UserRanking;
+  export type UserProfile = import("@schemas/user").UserProfile;
+  export type Notification = import("@schemas/user").Notification;
+  export type SavedSearch = import("@schemas/user").SavedSearch;
+  export type WordCloudItem = import("@schemas/user").WordCloudItem;
+  export type UserStatistics = import("@schemas/user").UserStatistics;
+  export type UserRanking = import("@schemas/user").UserRanking;
 
   // AI types
-  export type ConversationRequest = import("../schemas/ai").ConversationRequest;
-  export type ConversationResponse =
-    import("../schemas/ai").ConversationResponse;
+  export type ConversationRequest = import("@schemas/ai").ConversationRequest;
+  export type ConversationResponse = import("@schemas/ai").ConversationResponse;
 
   // Admin types
-  export type CacheStatus = import("../schemas/admin").CacheStatus;
-  export type SystemInfo = import("../schemas/admin").SystemInfo;
+  export type CacheStatus = import("@schemas/admin").CacheStatus;
+  export type SystemInfo = import("@schemas/admin").SystemInfo;
 }
 
 // Type guards
 export const isErrorResponse = (
   response: any
-): response is import("../schemas/common").ErrorResponse => {
+): response is import("@schemas/common").ErrorResponse => {
   return !!(
     response &&
     typeof response.status === "number" &&
@@ -243,7 +242,7 @@ export const isErrorResponse = (
 
 export const isDocumento = (
   obj: any
-): obj is import("../schemas/documents").Documento => {
+): obj is import("@schemas/documents").Documento => {
   return !!(
     obj &&
     (typeof obj.id === "string" || typeof obj.id === "number") &&

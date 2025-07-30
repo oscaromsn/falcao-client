@@ -4,7 +4,7 @@ import { z } from "zod";
 // Search filter schema
 export const FiltroSchema = z.object({
   texto: z.string().optional(),
-  colecao: z.array(z.string()).optional(),
+  colecao: z.string().optional(), // API expects single collection, not array
   tribunais: z.array(z.string()).optional(),
   precedente: z.string().optional(),
   temEmenta: z.enum(["S", "N"]).optional(),
@@ -26,19 +26,20 @@ export const FiltroSchema = z.object({
   verTodosPrecedentes: z.boolean().optional(),
 });
 
-// Available filter value
+// Available filter value - updated to match actual API response
 const ValorFiltroSchema = z.object({
   valor: z.string(),
-  quantidade: z.number(),
+  quantidade: z.number().nullable(), // API sometimes returns null
   valorWeb: z.string().optional(),
-  valorBalao: z.string().optional(),
+  valorBalao: z.string().nullable().optional(), // API sometimes returns null
 });
 
-// Available filter
+// Available filter - updated to match actual API response
 const FiltroDisponivelSchema = z.object({
   nomeDoFiltro: z.string(),
   nomeWeb: z.string(),
   ordem: z.number(),
+  colecao: z.string().nullable().optional(), // Additional field in API
   valoresFiltro: z.array(ValorFiltroSchema),
 });
 
@@ -50,9 +51,13 @@ export const SearchResponseSchema = z.object({
   temasTopFive: z.array(DocumentoSchema).optional(),
 });
 
-// Count response
+// Count response - actual API structure
 export const CountResponseSchema = z.object({
-  filtrosDisponiveis: z.array(FiltroDisponivelSchema),
+  countPrecedentes: z.number(),
+  countAcordaos: z.number(),
+  countSentencas: z.number(),
+  countRR: z.number(),
+  countDecisoesMonocraticas: z.number(),
 });
 
 // Autocomplete response
@@ -76,25 +81,91 @@ export const TribunalSchema = z.object({
   nome: z.string(),
 });
 
-// System information schemas
-export const SystemVersionsSchema = z.object({
-  versoes: z.array(
+// System information schemas - actual API structure
+export const SystemVersionsSchema = z.array(
+  z.object({
+    versao: z.string(),
+    data: z.string(), // API uses 'data' not 'dataLancamento'
+    descricao: z.string().optional(),
+  })
+);
+
+export const DataUpdateSchema = z.object({
+  dataAtualizacaoPrecedentes: z.array(
     z.object({
-      versao: z.string(),
-      dataLancamento: z.string(),
-      descricao: z.string().optional(),
+      tribunal: z.string(),
+      data: z.string(),
+    })
+  ),
+  dataAtualizacaoPrecedentesBNP: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string(),
+    })
+  ),
+  dataAtualizacaoAcordao: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string(),
+    })
+  ),
+  dataAtualizacaoSentenca: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string(),
+    })
+  ),
+  dataAtualizacaoRecursoRevista: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string(),
+    })
+  ),
+  dataAtualizacaoDecisaoMonocratica: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string(),
     })
   ),
 });
 
-export const DataUpdateSchema = z.object({
-  dataIndexacao: z.string(),
-  ultimaAtualizacao: z.string(),
-});
-
 export const DataPublicationSchema = z.object({
-  dataPublicacao: z.string(),
-  fonte: z.string().optional(),
+  dataAtualizacaoPrecedentes: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string().nullable(),
+    })
+  ),
+  dataAtualizacaoPrecedentesBNP: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string().nullable(),
+    })
+  ),
+  dataAtualizacaoAcordao: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string().nullable(),
+    })
+  ),
+  dataAtualizacaoSentenca: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string().nullable(),
+    })
+  ),
+  dataAtualizacaoRecursoRevista: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string().nullable(),
+    })
+  ),
+  dataAtualizacaoDecisaoMonocratica: z.array(
+    z.object({
+      tribunal: z.string(),
+      data: z.string().nullable(),
+    })
+  ),
 });
 
 // Types

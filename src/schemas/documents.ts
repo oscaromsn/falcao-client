@@ -1,18 +1,36 @@
 import { z } from "zod";
 
-// Base document schema
+// Base document schema - updated to match actual API response
 export const BaseDocumentoSchema = z.object({
-  id: z.union([z.string(), z.number()]),
+  id: z.union([z.string(), z.number()]).optional(), // API sometimes doesn't include id
   tribunal: z.string(),
-  numeroProcesso: z.string(),
-  tituloDecisao: z.string(),
+  numeroProcesso: z.string().optional(), // API sometimes doesn't include numeroProcesso
+  tituloDecisao: z.string().optional(), // API sometimes doesn't include tituloDecisao
   ementa: z.string().optional(),
   textoCompleto: z.string().optional(),
+  textoAcordao: z.string().optional(), // Actual field name in API
   relator: z.string().optional(),
-  dataJulgamento: z.string().optional(),
-  orgaoJulgador: z.string().optional(),
-  classeProcessual: z.string().optional(),
+  dataJulgamento: z.string().nullable().optional(), // API returns null sometimes
+  orgaoJulgador: z.string().nullable().optional(), // Can be null or undefined in temasTopFive
+  classeProcessual: z.string().nullable().optional(), // API returns null sometimes
+  classeProcesso: z.string().optional(), // Actual field name in API
   siglaClasseProcesso: z.string().optional(),
+  turma: z.string().optional(),
+  idTurma: z.number().optional(),
+  gabinete: z.string().nullable().optional(),
+  idGabinete: z.number().nullable().optional(),
+  possuiEmenta: z.union([z.boolean(), z.string()]).optional(), // API returns string like "S"/"N"
+  idDocumentoAcordao: z.string().optional(),
+  highlightTextoAcordaoAnonimizado: z
+    .union([z.array(z.string()), z.string()])
+    .optional(), // API can return string
+  highlightEmenta: z.union([z.array(z.string()), z.string()]).optional(), // API can return string
+  highlightTextoAcordao: z.union([z.array(z.string()), z.string()]).optional(), // API can return string
+  referenciaLegislativa: z
+    .union([z.array(z.any()), z.string()])
+    .nullable()
+    .optional(), // API can return string, null, or be undefined
+  dataJuntada: z.string().optional(),
 });
 
 // Extended document schema with additional fields
