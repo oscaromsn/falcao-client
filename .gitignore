@@ -46,3 +46,4 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # dev artifacts
 repomix-output.xml
 debug_artifacts
+scripts/analysis-output/**
