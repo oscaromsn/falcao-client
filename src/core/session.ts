@@ -1,5 +1,4 @@
 import type { Geolocation } from "@schemas/common";
-import { MD5 } from "crypto-js";
 
 const JURIS_TOKEN_SALT = "T9!juris#F4LKN";
 const SESSION_ID_KEY = "falcao_session_id";
@@ -61,7 +60,9 @@ export class SessionManager {
   }
 
   public generateJurisToken(): string {
-    const hash = MD5(this.sessionId + JURIS_TOKEN_SALT).toString();
+    const hasher = new Bun.CryptoHasher("md5");
+    hasher.update(this.sessionId + JURIS_TOKEN_SALT);
+    const hash = hasher.digest("hex");
     return hash.substring(3, 17);
   }
 
