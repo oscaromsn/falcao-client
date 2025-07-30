@@ -167,19 +167,15 @@ describe("HttpClient", () => {
 
     it("should handle 401 authentication errors", async () => {
       const axiosInstance = httpClient.getInstance();
-      const error = {
+
+      // Mock the adapter to simulate a 401 response
+      axiosInstance.defaults.adapter = vi.fn().mockRejectedValue({
         isAxiosError: true,
         response: {
           status: 401,
           data: { userMessage: "Token expired" },
         },
-      };
-
-      // Mock axios.isAxiosError
-      (axios as any).isAxiosError = () => true;
-
-      // Test by making axios instance reject with this error
-      axiosInstance.request = vi.fn().mockRejectedValue(error);
+      });
 
       await expect(
         httpClient.request({ method: "GET", url: "/test" })
@@ -188,18 +184,15 @@ describe("HttpClient", () => {
 
     it("should handle 403 forbidden errors", async () => {
       const axiosInstance = httpClient.getInstance();
-      const error = {
+
+      // Mock the adapter to simulate a 403 response
+      axiosInstance.defaults.adapter = vi.fn().mockRejectedValue({
         isAxiosError: true,
         response: {
           status: 403,
           data: { userMessage: "Forbidden" },
         },
-      };
-
-      (axios as any).isAxiosError = () => true;
-
-      // Test by making axios instance reject with this error
-      axiosInstance.request = vi.fn().mockRejectedValue(error);
+      });
 
       await expect(
         httpClient.request({ method: "GET", url: "/test" })
@@ -208,7 +201,9 @@ describe("HttpClient", () => {
 
     it("should handle 429 rate limit errors", async () => {
       const axiosInstance = httpClient.getInstance();
-      const error = {
+
+      // Mock the adapter to simulate a 429 response
+      axiosInstance.defaults.adapter = vi.fn().mockRejectedValue({
         isAxiosError: true,
         response: {
           status: 429,
@@ -216,12 +211,7 @@ describe("HttpClient", () => {
           data: {},
         },
         message: "Too Many Requests",
-      };
-
-      (axios as any).isAxiosError = () => true;
-
-      // Test by making axios instance reject with this error
-      axiosInstance.request = vi.fn().mockRejectedValue(error);
+      });
 
       await expect(
         httpClient.request({ method: "GET", url: "/test" })
@@ -230,19 +220,16 @@ describe("HttpClient", () => {
 
     it("should handle general network errors", async () => {
       const axiosInstance = httpClient.getInstance();
-      const error = {
+
+      // Mock the adapter to simulate a 500 response
+      axiosInstance.defaults.adapter = vi.fn().mockRejectedValue({
         isAxiosError: true,
         response: {
           status: 500,
           data: { userMessage: "Internal Server Error" },
         },
         message: "Network Error",
-      };
-
-      (axios as any).isAxiosError = () => true;
-
-      // Test by making axios instance reject with this error
-      axiosInstance.request = vi.fn().mockRejectedValue(error);
+      });
 
       await expect(
         httpClient.request({ method: "GET", url: "/test" })
@@ -261,18 +248,14 @@ describe("HttpClient", () => {
       httpClient = new HttpClient(config);
       const axiosInstance = httpClient.getInstance();
 
-      const error = {
+      // Mock the adapter to simulate a 401 response
+      axiosInstance.defaults.adapter = vi.fn().mockRejectedValue({
         isAxiosError: true,
         response: {
           status: 401,
           data: { userMessage: "Unauthorized" },
         },
-      };
-
-      (axios as any).isAxiosError = () => true;
-
-      // Test by making axios instance reject with this error
-      axiosInstance.request = vi.fn().mockRejectedValue(error);
+      });
 
       try {
         await httpClient.request({ method: "GET", url: "/test" });
