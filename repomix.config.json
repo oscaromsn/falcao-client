@@ -13,7 +13,7 @@
     "removeComments": false,
     "removeEmptyLines": false,
     "compress": false,
-    "topFilesLength": 0,
+    "topFilesLength": 10,
     "showLineNumbers": false,
     "copyToClipboard": false,
     "git": {
